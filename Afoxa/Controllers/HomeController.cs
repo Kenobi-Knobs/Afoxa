@@ -1,30 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Afoxa.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace Afoxa.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly AppContext db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(AppContext context)
         {
-            _logger = logger;
+            db = context;
         }
 
+        private void setTeacherData()
+        {
+        }
+
+        private void setStudentData()
+        {
+        }
+
+        private void setUserData()
+        {
+            string userName = User.Identity.Name;
+            var user = db.Users.FirstOrDefault(user => user.UserName == userName);
+            var roleId = db.UserRoles.FirstOrDefault(ur => ur.UserId == user.Id).RoleId;
+            string roleName = db.Roles.FirstOrDefault(role => role.Id == roleId).Name;
+
+            ViewBag.Role = roleName;
+            ViewBag.TgUser = user;
+        }
+
+        [Authorize]
         public IActionResult Index()
         {
-            return View();
-        }
+            setUserData();
 
-        public IActionResult Privacy()
-        {
+            if(ViewBag.Role == "Teacher")
+            {
+                setTeacherData();
+            }
+            else
+            {
+                setStudentData();
+            }
+
+            ViewBag.ViewHeader = false;
             return View();
         }
 

@@ -1,0 +1,18 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+body {
+
+}
+
+h2 {
+    font-family: 'Rubik', sans-serif;
+    font-size: -webkit-xxx-large;
+}
+
+.vertical-center {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
