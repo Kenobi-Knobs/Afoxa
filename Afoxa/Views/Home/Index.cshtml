@@ -2,12 +2,34 @@
     ViewData["Title"] = "Main page";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="@Url.Content("/css/home.css")">
+}
+
+<div class="user-menu">
+    <img class="avatar" src="@ViewBag.TgUser.TelegramPhotoUrl" />
+    <div class="username">@ViewBag.TgUser.TelegramUserName</div>
+    <form method="post" asp-controller="Account" asp-action="Logout">
+        <button type="submit" class="btn btn-link">Logout</button>
+    </form>
+</div>    
+    
+
+
 <div class="text-center">
     <h2>Доброго вечора, @ViewBag.TgUser.TelegramFirstName</h2>
-    @if(@ViewBag.Role == "Teacher")
+    @if (@ViewBag.Role == "Teacher")
     {
         <h4>Ваші курси:</h4>
-        
+        <br />
+        @foreach (var course in ViewBag.Teacher.Courses)
+        {
+            <div class="course-card" id="@course.Id">
+                <p>@course.Name</p>
+                <p>@course.About</p>
+            </div>
+            <br />
+        }
     }
     else
     {
@@ -16,8 +38,8 @@
 
 
 
-
-    <form method="post" asp-controller="Account" asp-action="Logout">
-        <button type="submit" class="btn btn-link">Logout</button>
-    </form>
+    @section Scripts
+    {
+        <script src="@Url.Content("/js/home.js")"></script>
+    }
 </div>

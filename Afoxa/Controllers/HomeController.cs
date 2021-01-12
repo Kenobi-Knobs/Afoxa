@@ -3,20 +3,29 @@ using Microsoft.AspNetCore.Mvc;
 using Afoxa.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace Afoxa.Controllers
 {
     public class HomeController : Controller
     {
         private readonly AppContext db;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(AppContext context)
+        public HomeController(AppContext context, UserManager<User> userManager)
         {
             db = context;
+            _userManager = userManager;
         }
 
         private void setTeacherData()
         {
+            string userName = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(userName).Result;
+            var teacher = db.Teachers.Where(u => u.UserId == user.Id).FirstOrDefault(); 
+            db.Entry(teacher).Collection(c => c.Courses).Load();
+
+            ViewBag.Teacher = teacher;
         }
 
         private void setStudentData()
@@ -26,9 +35,8 @@ namespace Afoxa.Controllers
         private void setUserData()
         {
             string userName = User.Identity.Name;
-            var user = db.Users.FirstOrDefault(user => user.UserName == userName);
-            var roleId = db.UserRoles.FirstOrDefault(ur => ur.UserId == user.Id).RoleId;
-            string roleName = db.Roles.FirstOrDefault(role => role.Id == roleId).Name;
+            var user = _userManager.FindByNameAsync(userName).Result;
+            var roleName = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
 
             ViewBag.Role = roleName;
             ViewBag.TgUser = user;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Afoxa.Models
 {
@@ -11,11 +8,6 @@ namespace Afoxa.Models
 
         public string UserId { get; set; }
 
-        public virtual ICollection<Course> Courses { get; set; }
-
-        public Student()
-        {
-            Courses = new List<Course>();
-        }
+        public virtual List<Course> Courses { get; set; } = new List<Course>();
     }
 }

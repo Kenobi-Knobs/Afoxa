@@ -11,11 +11,6 @@ namespace Afoxa.Models
 
         public string UserId { get; set; }
 
-        public virtual ICollection<Course> Courses { get; set; }
-
-        public Teacher()
-        {
-            Courses = new List<Course>();
-        }
+        public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
     }
 }

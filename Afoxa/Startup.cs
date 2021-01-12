@@ -21,11 +21,13 @@ namespace Afoxa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdentityContext>(options =>
+                            options.UseSqlServer(Configuration.GetConnectionString("Identity")));
             services.AddDbContext<AppContext>(options =>
-                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("App")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<AppContext>();
+                .AddEntityFrameworkStores<IdentityContext>();
 
             services.AddControllersWithViews();
         }

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Afoxa.Models
 {
-    public class AppContext : IdentityDbContext<User>
+    public class AppContext : DbContext
     {
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -11,9 +10,9 @@ namespace Afoxa.Models
         public DbSet<Task> Tasks { get; set; }
 
         public AppContext(DbContextOptions<AppContext> options)
-                : base(options)
-            {      
-                Database.EnsureCreated();
-            }
+         : base(options)
+        {
+            Database.EnsureCreated();
         }
+    }
 }

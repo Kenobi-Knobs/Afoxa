@@ -40,15 +40,15 @@ namespace Afoxa.Controllers
             if (status == "Teacher")
             {
                 Teacher teacher = new Teacher { UserId = user.Id };
-                await db.Teachers.AddAsync(teacher);
+                db.Teachers.Add(teacher);
             }
 
             if (status == "Student")
             {
                 Student student = new Student { UserId = user.Id };
-                await db.Students.AddAsync(student);
+                db.Students.Add(student);
             }
-
+            db.SaveChanges();
             await _userManager.AddToRoleAsync(user, status);
 
             return Ok();
