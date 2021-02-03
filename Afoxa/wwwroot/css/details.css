@@ -1,0 +1,122 @@
+﻿.menu{
+    text-align: center;
+}
+
+.menu-item {
+    font-family: "Rubik";
+    color: #A5A5A5;
+    padding: 1%;
+}
+
+.current{
+    color: black;
+}
+
+.menu-item:hover{
+   text-decoration:none;
+   color: black;
+}
+.about {
+    font-family: 'Rubik';
+    word-wrap: break-word;
+}
+
+.avatar-list{
+    margin-bottom: 10px;
+}
+
+.username{
+    color: black;
+}
+
+.username:hover {
+text-decoration: none;
+}
+
+.subheader {
+    text-align: center;
+    color: #5C5C5C;
+}
+
+.header {
+    font-family: 'Rubik';
+    font-size: 30px;
+}
+
+.content {
+    margin-top: 5%;
+}
+
+.preview {
+    text-align: center;
+}
+
+.edit-btn {
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.emoji {
+    text-align: center;
+    margin-top: 12%;
+}
+
+emoji-picker {
+    width: 360px;
+    height: 330px;
+    --background: #fff;
+}
+
+.emoji-block {
+    display: flex;
+}
+
+.emoji-example {
+    margin-left: 5%;
+}
+
+.icon-example {
+    margin-left: 43%;
+}
+
+@media screen and (max-width: 450px) {
+    .teacher-name{
+        display:inline;
+    }
+
+    .menu {
+        margin-top: 6%;
+    }
+
+    .col-6 {
+        min-width: 370px;
+        margin-top: 10%;
+    }
+
+    .preview {
+        margin-top: 20%;
+        min-width: 370px;
+    }
+
+    .item-text {
+        display:none;
+    }
+
+    .item-emoji {
+        padding: 4%;
+    }
+
+    .emoji-block {
+        flex-direction: column;
+    }
+
+    emoji-picker {
+        width: 100%;
+    }
+
+    .emoji-example {
+        width: 100%;
+        margin-left: 0;
+    }
+}

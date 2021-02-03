@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using AppContext = Afoxa.Models.AppContext;
@@ -12,13 +13,91 @@ namespace Afoxa.Controllers
 {
     public class CourseController : Controller
     {
-        AppContext db;
+        private readonly AppContext db;
+        private readonly IdentityContext idb;
         private readonly UserManager<User> _userManager;
 
-        public CourseController(AppContext context, UserManager<User> userManager)
+        public CourseController(AppContext context, UserManager<User> userManager, IdentityContext iContext)
         {
+            idb = iContext;
             db = context;
             _userManager = userManager;
+        }
+
+        private void setUserData()
+        {
+            string userName = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(userName).Result;
+            var roleName = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+
+            ViewBag.Role = roleName;
+            ViewBag.TgUser = user;
+        }
+
+        public void InitializeAsync(int Id)
+        {
+            Course course = db.Courses.FirstOrDefault(course => course.Id == Id);
+            db.Entry(course).Collection(c => c.Students).Load();
+            db.Entry(course).Collection(c => c.Teachers).Load();
+            List<User> Teachers = new List<User>();
+            List<User> Students = new List<User>();
+            foreach(var teacher in course.Teachers)
+            {
+                var user = idb.Users.FirstOrDefault(user => user.Id == teacher.UserId);
+                Teachers.Add(user);
+            }
+            foreach (var student in course.Students)
+            {
+                var user = idb.Users.FirstOrDefault(user => user.Id == student.UserId);
+                Students.Add(user);
+            }
+
+            ViewBag.Teachers = Teachers;
+            ViewBag.Students = Students;
+            ViewBag.Course = course;
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public ActionResult Students(int Id)
+        {
+            if (Id == 0)
+            {
+                return NotFound();
+            }
+            setUserData();
+            InitializeAsync(Id);
+
+            if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+            {
+                ViewBag.ViewHeader = true;
+                ViewBag.Id = Id;
+                return View();
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [Authorize]
+        public ActionResult Details(int Id)
+        {
+            if(Id == 0)
+            {
+                return NotFound();
+            }
+            setUserData();
+            InitializeAsync(Id);
+            if(ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            {
+                ViewBag.ViewHeader = true;
+                ViewBag.Id = Id;
+                return View();
+            }
+            else
+            {
+                return Forbid();
+            }    
         }
 
         // POST: Course/CreateOrUpdate
@@ -46,7 +125,7 @@ namespace Afoxa.Controllers
 
                     db.Courses.Add(course);
                     db.SaveChanges();
-                    return Ok("Create");
+                    return Ok(course.Id);
                 }
                 else
                 {
@@ -60,6 +139,7 @@ namespace Afoxa.Controllers
                     // teacher is owner this course?
                     if (teacher.Courses.Contains(loadCourse))
                     {
+                        loadCourse.Emoji = course.Emoji;
                         loadCourse.Name = course.Name;
                         loadCourse.About = course.About;
                         db.SaveChanges();

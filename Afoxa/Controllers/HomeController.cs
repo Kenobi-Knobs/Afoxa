@@ -56,7 +56,7 @@ namespace Afoxa.Controllers
                 setStudentData();
             }
 
-            ViewBag.ViewHeader = false;
+            ViewBag.ViewHeader = true;
             return View();
         }
 

@@ -1,2 +1,114 @@
 ﻿body {
+    padding:10px;
+}
+
+.text-center {
+    margin-top: 2%;
+}
+
+.greeting {
+    margin: 0;
+    font-family: Arial;
+    letter-spacing: 1px;
+    margin-bottom: 1%;
+}
+
+.subtext {
+    font-size: large;
+    margin-bottom: 3%;
+}
+
+.course-card {
+    width: 420px;
+    height: 90px;
+    border-radius: 15px;
+    border: none;
+    display: inline-flex;
+    margin-bottom: 15px;
+    background-color: #E0E0E0;
+    align-items: center;
+}
+
+.course-card :active, :hover, :focus {
+    outline: 0;
+    outline-offset: 0;
+}
+
+.course-icon {
+    padding-top: 4px;
+    font-size: xx-large;
+    background-color: #C4C4C4;
+    border-radius: 100%;
+    width: 70px;
+    height: 60px;
+    margin: 15px;
+}
+
+.plus {
+    font-size: smaller;
+}
+
+.course-name {
+    text-align: left;
+    font-size: larger;
+    font-family: Arial;
+    padding-top: 5%;
+    word-break: break-word;
+    width: 100%;
+}
+
+.course {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+#create {
+    font-weight: 600;
+}
+
+emoji-picker {
+    width: 360px;
+    height: 330px;
+    --background: #fff;
+}
+
+.emoji-block{
+    display: flex;
+}
+
+.emoji-example{
+    margin-left: 5%;
+}
+
+.icon-example {
+    margin-left: 43%;
+}
+
+#name{
+    margin-bottom: 2%;
+}
+
+@media screen and (max-width: 450px) {
+    .emoji-block {
+        flex-direction: column;  
+    }
+
+    emoji-picker {
+        width: 100%;
+    }
+
+    .emoji-example {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .course-card {
+        width: 100%;
+    }
+
+    .greeting {
+        margin-top: 15%;
+    }
 }

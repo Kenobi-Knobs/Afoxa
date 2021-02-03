@@ -6,40 +6,72 @@
     <link rel="stylesheet" href="@Url.Content("/css/home.css")">
 }
 
-<div class="user-menu">
-    <img class="avatar" src="@ViewBag.TgUser.TelegramPhotoUrl" />
-    <div class="username">@ViewBag.TgUser.TelegramUserName</div>
-    <form method="post" asp-controller="Account" asp-action="Logout">
-        <button type="submit" class="btn btn-link">Logout</button>
-    </form>
-</div>    
-    
-
-
 <div class="text-center">
-    <h2>Доброго вечора, @ViewBag.TgUser.TelegramFirstName</h2>
     @if (@ViewBag.Role == "Teacher")
     {
-        <h4>Ваші курси:</h4>
-        <br />
-        @foreach (var course in ViewBag.Teacher.Courses)
+        <h2 class="greeting"><span class="time">Доброго дня</span>, @ViewBag.TgUser.TelegramFirstName</h2>
+        if (@ViewBag.Teacher.Courses.Count > 0)
         {
-            <div class="course-card" id="@course.Id">
-                <p>@course.Name</p>
-                <p>@course.About</p>
-            </div>
-            <br />
+            <p class="subtext">Ось ваші курси:</p>
         }
+        else
+        {
+            <p class="subtext">Ого, тут порожньо</p>
+        }
+        <div class="course-list">
+            @foreach (var course in ViewBag.Teacher.Courses)
+            {
+                <button class="course-card redirect-button" id="@course.Id">
+                    <div class="course-icon">
+                        <span>@course.Emoji</span>
+                    </div>
+                    <p class="course-name">@course.Name</p>
+                </button>
+                <br />
+            }
+        </div>
+        <button class="course-card" id="create" data-toggle="modal" data-target="#Modal">
+            <div class="course-icon">
+                <span class="plus">➕</span>
+            </div>
+            <p class="course-name">Створити</p>
+        </button>
+        <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Новий чудовий курс!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="emoji-block">
+                            <emoji-picker></emoji-picker>
+                            <div class="emoji-example">
+                                <div class="course-icon icon-example">
+                                    <span class="emoji">🐸</span>
+                                </div>
+                                <p>Емодзі-іконка допоможе орієнтуватися в курсах, оберіть же її.</p>
+                                <input type="text" class="form-control" name="Name" id="name" placeholder="Як курс назвеш, так він і попливе :)" />
+                                <textarea class="form-control" name="About" id="about" rows="5" placeholder="Про що ваш курс? Хто його проводить?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary create-btn">Створити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
     else
     {
         <h5>Dashboard for student is not ready</h5>
     }
-
-
-
-    @section Scripts
-    {
-        <script src="@Url.Content("/js/home.js")"></script>
-    }
 </div>
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js"></script>
+@section Scripts
+{
+    <script src="@Url.Content("/js/home.js")"></script>
+}

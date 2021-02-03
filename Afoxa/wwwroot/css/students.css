@@ -1,0 +1,152 @@
+﻿main{
+    margin-left: 4%;
+    margin-right: 4%;
+}
+
+.menu {
+    text-align: center;
+}
+
+.menu-item {
+    font-family: "Rubik";
+    color: #A5A5A5;
+    padding: 1%;
+}
+
+.kick-btn{
+    font-size: 8px;
+}
+
+.revoke{
+    margin-bottom: 10px;
+}
+
+.current {
+    color: black;
+}
+
+.menu-item:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.btn-dark {
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align:center;
+}
+
+.btn-col{
+    padding-left: 0;
+}
+
+.content{
+    margin-top: 5%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.desc {
+    font-family: 'Rubik';
+    font-size: small;
+    color: #7E7E7E;
+}
+
+.title {
+    font-family: 'Rubik';
+    font-size: large;
+}
+
+.table-avatar {
+    border-radius: 100%;
+    height: 25px;
+    margin-bottom: 4px;
+}
+
+.table-username{
+    color: black;
+}
+
+.red{
+    background-color: red;
+}
+
+.green{
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.blue {
+    background-color: blue;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.label-name{
+    padding-left: 8px;
+}
+
+.label-delete {
+    padding-right: 7px;
+}
+
+.label {
+    display: flex;
+    border-radius: 8px;
+    color: white;
+    margin: 3px;
+    padding: 1px;
+    justify-content: space-between;
+}
+
+.min-label {
+    height: 15px;
+    width: 22px;
+    text-align: center;
+    padding-bottom: 22px;
+    border-radius: 100%;
+    color: white;
+    font-size: 14px;
+    margin-right: 3px;
+}
+
+.add-label {
+    height: 15px;
+    width: 22px;
+    text-align: center;
+    padding-bottom: 22px;
+    border-radius: 100%;
+    color: white;
+    font-size: 14px;
+    margin-right: 3px;
+    background-color: gray;
+}
+
+.label-case{
+    display:flex;
+}
+
+.revoke{
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 450px) {
+    .menu {
+        margin-top: 6%;
+    }
+    .item-emoji {
+        padding: 4%;
+    }
+    .item-text {
+        display: none;
+    }
+    .table-avatar{
+        display:none;
+    }
+}
