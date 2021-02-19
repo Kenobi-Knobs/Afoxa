@@ -3,6 +3,8 @@
 }
 
 @section Styles {
+    <link href="@Url.Content("/js/dist/css/datepicker.min.css")" rel="stylesheet" type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="@Url.Content("/css/students.css")">
 }
 
@@ -22,7 +24,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Студент</th>
-                        <th scope="col">Mітки</th>
+                        @*<th scope="col">Mітки</th>*@
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -37,44 +39,186 @@
                                     <a class="table-username" href="https://t.me/@ViewBag.TgUserTelegramUserName">@ViewBag.TgUser.TelegramUserName</a>
                                 </div>
                             </td>
-                            <td class="label-case">
-                                <div class="min-label red"><span>×</span></div>
-                                <div class="min-label orange"><span>×</span></div>
-                                <div class="add-label"><span>+</span></div>
-                            </td>
+                            @*                            <td class="label-case">
+                                    <div class="min-label red"><span>×</span></div>
+                                    <div class="min-label orange"><span>×</span></div>
+                                    <div class="add-label"><span>+</span></div>
+                                </td>*@
                             <td>
-                                <button class="btn btn-outline-dark kick-btn">❌</button>
+                                <div class="dropdown dropleft">
+                                    <i class="fas fa-ellipsis-h" data-toggle="dropdown" style="font-family: 'FontAwesome'; color:black;"></i>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item kick-modal" data-toggle="modal" data-target="#kickModal" name="@ViewBag.TgUser.TelegramUserName" id="1000">❌ Вигнати</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+
+        <div class="modal fade" id="kickModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">🔨 Видалити студента</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><span class="kick-modal-usr" id="000">Username</span> буде видалений з курсу і більше не зможе приєднатися, ви впевнені?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-danger kick-usr">Видалити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div class="col-sm-2">
             <h4 class="title">🔖 Мітки</h4>
-            <p class="desc">Додайте мітки щоб простіше орієнтуватись</p>
-            <div class="btn-dark">Cтворити</div>
-            <div class="label red">
-                <span class="label-name">Перездача</span>
-                <div class="label-delete">×</div>
-            </div>
-            <div class="label orange">
-                <span class="label-name">Участь в конференції</span>
-                <div class="label-delete">×</div>
-            </div>
-            <br />  
+            <p class="desc">Додайте до 5 міток щоб простіше орієнтуватись в студентах (В розробці)</p>
+            <div class="btn-dark disabled" style="background-color: #b6b6b6;">Cтворити</div>
+            @*            <div class="label red">
+                    <span class="label-name">Перездача</span>
+                    <div class="label-delete">×</div>
+                </div>
+                <div class="label orange">
+                    <span class="label-name">Участь в конференції</span>
+                    <div class="label-delete">×</div>
+                </div>*@
+            <br />
         </div>
         <div class="col-sm-2">
             <h4 class="title">📢 Оголошення</h4>
             <p class="desc">
                 Створіть оголошення або нагадування для ваших студентів, Воно надійде в зазначений вами час в Telegram
             </p>
-            <div class="btn-dark">Cтворити</div>
+            <div class="btn-dark" data-toggle="modal" data-target="#AdsModal">⏳ Черга</div>
+            <div class="btn-dark create-ads" data-toggle="modal" data-target="#createAdsModal" style="margin-top: 5px;">✨ Cтворити</div>
             <br />
+
+            <div class="modal fade" id="AdsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">⏳ Відкладені оголошення</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Оголошення</th>
+                                        <th scope="col">час відправки</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ads">
+                                    @foreach (var ad in ViewBag.Ads)
+                                    {
+                                        <tr>
+                                            <td>@ad.Title</td>
+                                            <td class="time">@ad.UnixTime</td>
+                                            <td class="delete-ad" id="@ad.Id">❌</td>
+                                        </tr>
+                                     }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="createAdsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">✨ Створити нове оголошення</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="submit-ad">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Тема</label>
+                                    <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                                    <small id="titleHelp" class="form-text text-muted">Буде відображатися на початку повідомення.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message">Повідомлення</label>
+                                    <textarea class="form-control" id="message" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="isPostMessage">
+                                        <label class="form-check-label" for="isPostMessage">Відкладена відправка</label>
+                                        <br />
+                                    </div>
+                                    <div class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                            <button type="button" class="btn btn-primary create-ad-btn">Створити</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <h4 class="title">🔑 Посилання для запрошення</h4>
-            <div class="btn-dark copy">Скопіювати</div>
-            <div class="btn-dark revoke">🔄 Оновити</div>
+            <div class="invite-code" style="display:none;">Invite code</div>
+            <div class="btn-dark copy" data-toggle="modal" data-target="#linkModal">📋 Скопіювати</div>
+            <div class="btn-dark revoke" data-toggle="modal" data-target="#refreshCodeModal">🔄 Оновити</div>
         </div>
+
+        <div class="modal fade" id="linkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">📋 Посилання для запрошення</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Перейшовши по цьому посиланню користувач зможе стати студентом цього чудового курсу</p>
+                        <input type="text" class="form-control" name="Link" id="link" value="https://t.me/MixDevBot?start=@ViewBag.Course.Invite" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="refreshCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">🔄 Оновити посилання для запрошення?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Посилання для запрошення буде змінено, старе посилання буде не дійсним, ви впевнені?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary revoke-btn">Оновити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

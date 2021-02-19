@@ -18,7 +18,7 @@ namespace Afoxa.Models
 
         [Required]
         public string About { get; set; }
-
+        public string Invite { get; set; }
         public virtual List<Student> Students { get; set; } = new List<Student>();
 
         public virtual ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();

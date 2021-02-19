@@ -13,6 +13,8 @@ namespace Afoxa.Models
 
         public string TelegramPhotoUrl { get; set; }
 
+        public string TelegramChatId { get; set; }
+
         public string Role { get; set; }
     }
 }

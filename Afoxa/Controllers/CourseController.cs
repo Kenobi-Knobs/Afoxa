@@ -41,7 +41,17 @@ namespace Afoxa.Controllers
             db.Entry(course).Collection(c => c.Teachers).Load();
             List<User> Teachers = new List<User>();
             List<User> Students = new List<User>();
-            foreach(var teacher in course.Teachers)
+            List<Ad> Ads = new List<Ad>();
+
+            foreach (var ad in db.Adv.ToList())
+            {
+                if(ad.CourseId == course.Id)
+                {
+                    Ads.Add(ad);
+                }
+            }
+
+            foreach (var teacher in course.Teachers)
             {
                 var user = idb.Users.FirstOrDefault(user => user.Id == teacher.UserId);
                 Teachers.Add(user);
@@ -51,7 +61,8 @@ namespace Afoxa.Controllers
                 var user = idb.Users.FirstOrDefault(user => user.Id == student.UserId);
                 Students.Add(user);
             }
-
+            
+            ViewBag.Ads = Ads;
             ViewBag.Teachers = Teachers;
             ViewBag.Students = Students;
             ViewBag.Course = course;
@@ -121,9 +132,10 @@ namespace Afoxa.Controllers
                 if (course.Id == 0)
                 {
                     // add teacher to course
-                    course.Teachers.Add(teacher);
-
+                    course.Teachers.Add(teacher);   
                     db.Courses.Add(course);
+                    db.SaveChanges();
+                    course.Invite = generateInvite(course.Id);
                     db.SaveChanges();
                     return Ok(course.Id);
                 }
@@ -147,7 +159,7 @@ namespace Afoxa.Controllers
                     }
                     else
                     {
-                        return Ok(teacher.Courses.Count);
+                        return Forbid();
                     } 
                 }
             } 
@@ -155,6 +167,23 @@ namespace Afoxa.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        private string generateInvite(int id)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var finalString = new String(stringChars);
+
+            string invite = id + "_" + finalString;
+            return invite;
         }
 
         // POST: Course/Delete
@@ -185,6 +214,44 @@ namespace Afoxa.Controllers
                     db.Courses.Remove(course);
                     db.SaveChanges();
                     return Ok("Deleted");
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+
+        }
+
+        // POST: Course/Revoke
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public ActionResult Revoke(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var course = db.Courses.Where(i => i.Id == id).FirstOrDefault();
+                string userName = User.Identity.Name;
+                var user = _userManager.FindByNameAsync(userName);
+                var teacher = db.Teachers.Include(c => c.Courses).Where(t => t.UserId == user.Result.Id).First();
+                db.Entry(teacher).Collection(c => c.Courses).Load();
+
+                if (course == null)
+                {
+                    return NotFound();
+                }
+
+                // teacher is owner this course?
+                if (teacher.Courses.Contains(course))
+                {
+                    course.Invite = generateInvite(course.Id);
+                    db.SaveChanges();
+                    return Ok(course.Invite);
                 }
                 else
                 {
