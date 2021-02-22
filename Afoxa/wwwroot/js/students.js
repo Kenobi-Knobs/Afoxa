@@ -51,7 +51,21 @@ $('.kick-modal').click(function () {
 
 $('.kick-usr').click(function () {
     let userId = $('.kick-modal-usr').attr('id');
-    alert('kick user = ' + userId);
+    let courseId = $('.content').attr('id');
+
+    let req = {
+        userId: userId,
+        courseId: courseId,
+    }
+
+    $.post('/Course/Kick', req)
+        .done(function () {
+            $('.' + userId).remove();
+            $('#kickModal').modal('toggle');
+        })
+        .fail(function () {
+            alert('error');
+        });
 });
 
 $('.create-ad-btn').click(function () {

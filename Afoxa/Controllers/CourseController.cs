@@ -169,6 +169,8 @@ namespace Afoxa.Controllers
             }
         }
 
+
+
         private string generateInvite(int id)
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -261,5 +263,68 @@ namespace Afoxa.Controllers
             }
 
         }
+
+        // POST: Course/AddStuudent
+        [HttpPost]
+        public ActionResult AddStudent(int? userId, string token)
+        {
+            if (!ModelState.IsValid || token == null || userId == null)
+            {
+                return BadRequest("invalid");
+            }
+            var course = db.Courses.FirstOrDefault(c => c.Invite == token);
+            var user = idb.Users.FirstOrDefault(u => u.TelegramId == userId);
+            var student = db.Students.FirstOrDefault(s => s.UserId == user.Id);
+
+            if (course == null || student == null)
+            {
+                return NotFound();
+            }
+
+            course.Students.Add(student);
+            db.SaveChanges();
+            return Ok(200);
+        }
+
+        // POST: Course/Kick
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public ActionResult Kick(int? courseId, string userId)
+        {
+            if (courseId == null || userId == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var course = db.Courses.Where(i => i.Id == courseId).FirstOrDefault();
+                string userName = User.Identity.Name;
+                var user = _userManager.FindByNameAsync(userName);
+                var teacher = db.Teachers.Include(c => c.Courses).Where(t => t.UserId == user.Result.Id).First();
+                db.Entry(teacher).Collection(c => c.Courses).Load();
+                var kickStudent = db.Students.FirstOrDefault(s => s.UserId == userId);
+
+                if (course == null)
+                {
+                    return NotFound();
+                }
+
+                // teacher is owner this course?
+                if (teacher.Courses.Contains(course))
+                {
+                    db.Entry(course).Collection("Students").Load();
+                    course.Students.Remove(kickStudent);
+                    db.SaveChanges();
+                    return Ok("kick");
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+
+        }
     }
+
 }

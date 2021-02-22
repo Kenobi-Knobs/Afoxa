@@ -29,30 +29,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 1; i <= 10; i++)
+                    @{int i = 1; }
+                    @foreach (var user in ViewBag.Students)
                     {
-                        <tr>
-                            <td>@i</td>
-                            <td>
-                                <div class="table-user">
-                                    <img class="table-avatar" src="@ViewBag.TgUser.TelegramPhotoUrl" />
-                                    <a class="table-username" href="https://t.me/@ViewBag.TgUserTelegramUserName">@ViewBag.TgUser.TelegramUserName</a>
+                    <tr class="@user.Id">
+                        <td>@i</td>
+                        @{i++; }
+                        <td>
+                            <div class="table-user">
+                                <img class="table-avatar" src="@user.TelegramPhotoUrl" />
+                                <a class="table-username" href="https://t.me/@user.TelegramUserName">@user.TelegramUserName</a>
+                            </div>
+                        </td>
+                        @*<td class="label-case">
+            <div class="min-label red"><span>×</span></div>
+            <div class="min-label orange"><span>×</span></div>
+            <div class="add-label"><span>+</span></div>
+        </td>*@
+                        <td>
+                            <div class="dropdown dropleft">
+                                <i class="fas fa-ellipsis-h" data-toggle="dropdown" style="font-family: 'FontAwesome'; color:black;"></i>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item kick-modal" data-toggle="modal" data-target="#kickModal" name="@user.TelegramUserName" id="@user.Id">❌ Вигнати</a>
                                 </div>
-                            </td>
-                            @*                            <td class="label-case">
-                                    <div class="min-label red"><span>×</span></div>
-                                    <div class="min-label orange"><span>×</span></div>
-                                    <div class="add-label"><span>+</span></div>
-                                </td>*@
-                            <td>
-                                <div class="dropdown dropleft">
-                                    <i class="fas fa-ellipsis-h" data-toggle="dropdown" style="font-family: 'FontAwesome'; color:black;"></i>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item kick-modal" data-toggle="modal" data-target="#kickModal" name="@ViewBag.TgUser.TelegramUserName" id="1000">❌ Вигнати</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -68,7 +70,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><span class="kick-modal-usr" id="000">Username</span> буде видалений з курсу і більше не зможе приєднатися, ви впевнені?</p>
+                        <p><span class="kick-modal-usr" id="000">Username</span> буде видалений з курсу, ви впевнені?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
