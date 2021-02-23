@@ -111,6 +111,70 @@ namespace Afoxa.Controllers
             }    
         }
 
+        [Authorize]
+        public ActionResult Materials(int Id)
+        {
+            if (Id == 0)
+            {
+                return NotFound();
+            }
+            setUserData();
+            InitializeAsync(Id);
+            if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            {
+                ViewBag.ViewHeader = true;
+                ViewBag.Id = Id;
+                return View();
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [Authorize]
+        public ActionResult Marks(int Id)
+        {
+            if (Id == 0)
+            {
+                return NotFound();
+            }
+            setUserData();
+            InitializeAsync(Id);
+            if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            {
+                ViewBag.ViewHeader = true;
+                ViewBag.Id = Id;
+                return View();
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public ActionResult Settings(int Id)
+        {
+            if (Id == 0)
+            {
+                return NotFound();
+            }
+            setUserData();
+            InitializeAsync(Id);
+
+            if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+            {
+                ViewBag.ViewHeader = true;
+                ViewBag.Id = Id;
+                return View();
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
         // POST: Course/CreateOrUpdate
         [HttpPost]
         [Authorize(Roles = "Teacher")]
@@ -168,8 +232,6 @@ namespace Afoxa.Controllers
                 return BadRequest();
             }
         }
-
-
 
         private string generateInvite(int id)
         {
@@ -326,5 +388,4 @@ namespace Afoxa.Controllers
 
         }
     }
-
 }

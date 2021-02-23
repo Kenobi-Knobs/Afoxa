@@ -1,0 +1,18 @@
+﻿.menu {
+    text-align: center;
+}
+
+.menu-item {
+    font-family: "Rubik";
+    color: #A5A5A5;
+    padding: 1%;
+}
+
+.current {
+    color: black;
+}
+
+.menu-item:hover {
+    text-decoration: none;
+    color: black;
+}
