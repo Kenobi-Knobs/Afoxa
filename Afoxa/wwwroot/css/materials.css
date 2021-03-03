@@ -16,3 +16,21 @@
     text-decoration: none;
     color: black;
 }
+
+@media screen and (max-width: 450px) {
+    .menu {
+        margin-top: 6%;
+    }
+
+    .item-emoji {
+        padding: 4%;
+    }
+
+    .item-text {
+        display: none;
+    }
+
+    .table-avatar {
+        display: none;
+    }
+}
