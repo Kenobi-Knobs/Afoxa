@@ -3,6 +3,7 @@
 }
 
 @section Styles {
+    <link href="@Url.Content("/js/dist/css/datepicker.min.css")" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="@Url.Content("/css/materials.css")">
 }
 
@@ -17,14 +18,241 @@
 <div class="container content" id="@ViewBag.Id">
     <br />
     <div class="row">
-        <div class="col-xs-6">
-            <h4 class="header">🎙 Лекції</h4>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer commodo urna sed laoreet accumsan. Fusce consequat quis lectus posuere ullamcorper. Aenean nibh enim, volutpat nec lobortis eu, scelerisque eget magna. Integer a elementum ligula. Suspendisse potenti. Donec imperdiet, justo et placerat semper, turpis risus hendrerit enim, in pretium nisi odio id magna. In pretium, sem in rhoncus egestas, nunc tellus aliquam ipsum, in tempus nisi neque sed nisl. Morbi tincidunt velit lacus, quis blandit mi bibendum at. Proin purus odio, interdum in dolor in, convallis cursus velit. Etiam accumsan eget est non condimentum. Cras ut erat ut orci pulvinar pulvinar ut efficitur arcu. Aliquam nec rutrum mi, non fermentum lorem. Morbi nunc nulla, hendrerit efficitur elementum vitae, imperdiet sed turpis. Aliquam non suscipit nibh, in lobortis enim. Mauris eget porta eros. Phasellus eget leo suscipit, faucibus velit nec, consequat elit.</p>
+        <div class="col-xs-6 category">
+            <div class="category-head">
+                <h4 class="header">🎙 Лекції</h4>
+                <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addLectionModal">+</button>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#editLectionModal">
+                <span class="title">Лекція 1: Тупа хуйня тупої хуйні</span>
+                <span class="date-time">21.12.2020 11:40 🔗</span>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#showLectionModal">
+                <span class="title">Лекція 1: Тупа </span>
+                <span class="date-time">21.12.2020 11:40 🔗</span>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#editLectionModal">
+                <span class="title">Лекція 1: Тупа хуйня тупої хуйніfsdfsd  </span>
+                <span class="date-time">21.12.2020 11:40 👀</span>
+            </div>
         </div>
-        <div class="col-xs-6">
-            <h4 class="header">📝 Завдання</h4>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer commodo urna sed laoreet accumsan. Fusce consequat quis lectus posuere ullamcorper. Aenean nibh enim, volutpat nec lobortis eu, scelerisque eget magna. Integer a elementum ligula. Suspendisse potenti. Donec imperdiet, justo et placerat semper, turpis risus hendrerit enim, in pretium nisi odio id magna. In pretium, sem in rhoncus egestas, nunc tellus aliquam ipsum, in tempus nisi neque sed nisl. Morbi tincidunt velit lacus, quis blandit mi bibendum at. Proin purus odio, interdum in dolor in, convallis cursus velit. Etiam accumsan eget est non condimentum. Cras ut erat ut orci pulvinar pulvinar ut efficitur arcu. Aliquam nec rutrum mi, non fermentum lorem. Morbi nunc nulla, hendrerit efficitur elementum vitae, imperdiet sed turpis. Aliquam non suscipit nibh, in lobortis enim. Mauris eget porta eros. Phasellus eget leo suscipit, faucibus velit nec, consequat elit.</p>
+
+        <div class="modal fade" id="showLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">🎙 Лекція</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Лекція 1: Якась хуйня</h5>
+                        <p>21.12.2020 11:40</p>
+                        <p><a href="">Посилання на матеріали</a></p>
+                        <p><a href="">Посилання на конференцію</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="modal fade" id="addLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">🎙 Додати нову лекцію</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Додайте назву та посилання на матеріали лекції, створити конспект лекції можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
+                        <div class="form-group">
+                            <label for="title">Тема заннятя</label>
+                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <br />
+                            <label for="inputTitle">Посилання на матеріали</label>
+                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <small id="titleHelp" class="form-text text-muted">Студент переходитиме по цьому посиланню при кліці на лекцію.</small>
+                            <br />
+                            <label for="date">Дата та час проведення</label>
+                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isRemote">
+                                <label class="form-check-label" for="isRemote">Дистанційна лекція</label>
+                                <br />
+                            </div>
+                            <div class="remote">
+                                <label for="remoteLink">Посилання на лекцію</label>
+                                <input type="text" class="form-control" id="remoteLink" aria-describedby="titleHelp">
+                                <small id="remoteLink" class="form-text text-muted">Посилання для приєднання до онлайн конференції</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary kick-usr">Додати</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">🎙 Редагувати лекцію</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="title">Тема заннятя</label>
+                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <br />
+                            <label for="inputTitle">Посилання на матеріали</label>
+                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <small id="titleHelp" class="form-text text-muted">Студент переходитиме по цьому посиланню при кліці на лекцію.</small>
+                            <br />
+                            <label for="date">Дата та час проведення</label>
+                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isRemote">
+                                <label class="form-check-label" for="isRemote">Дистанційна лекція</label>
+                                <br />
+                            </div>
+                            <div class="remote">
+                                <label for="remoteLink">Посилання на лекцію</label>
+                                <input type="text" class="form-control" id="remoteLink" aria-describedby="titleHelp">
+                                <small id="remoteLink" class="form-text text-muted">Посилання для приєднання до онлайн конференції</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary kick-usr">Зберегти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6 category">
+            <div class="category-head">
+                <h4 class="header">📝 Завдання</h4>
+                <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addTaskModal">+</button>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#editTaskModal">
+                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні та такої</span>
+                <span class="date-time">до 21.12.2020</span>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#submitTaskModal">
+                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні</span>
+                <span class="date-time">до 21.12.2020</span>
+            </div>
+            <div class="item" data-toggle="modal" data-target="#editTaskModal">
+                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні</span>
+                <span class="date-time">до 21.12.2020</span>
+            </div>
+        </div>
+
+        <div class="modal fade" id="submitTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">📝 Здати завдання</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <h5>Лабораторна 1: Якась хуйня</h5>
+                            <p><a href="">Завдання</a></p>
+                            <br />
+                            <p>Додайте посилання на ваше рішення, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
+                            <label for="link">Посилання на відповідь</label>
+                            <input type="text" class="form-control" id="link" aria-describedby="titleHelp">
+                            <br />
+                            <label for="message">Коментар</label>
+                            <textarea class="form-control" id="message" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary kick-usr">Здати</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">📝 Додати нове завдання</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Додайте назву та посилання на завдання, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
+                        <div class="form-group">
+                            <label for="title">Тема</label>
+                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <br />
+                            <label for="inputTitle">Посилання на завдання</label>
+                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <small id="titleHelp" class="form-text text-muted">Посилання на матеріали завдання.</small>
+                            <br />
+                            <label for="date">Дедлайн</label>
+                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary kick-usr">Додати</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">📝 Редагувати завдання</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="title">Тема</label>
+                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <br />
+                            <label for="inputTitle">Посилання на завдання</label>
+                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <small id="titleHelp" class="form-text text-muted">Посилання на матеріали завдання.</small>
+                            <br />
+                            <label for="date">Дедлайн</label>
+                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                        <button type="button" class="btn btn-primary kick-usr">Зберегти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
