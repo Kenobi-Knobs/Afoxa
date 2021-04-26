@@ -18,13 +18,12 @@
 
 <div class="content" id="@ViewBag.Id">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-10">
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Студент</th>
-                        @*<th scope="col">Mітки</th>*@
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -41,11 +40,6 @@
                                 <a class="table-username" href="https://t.me/@user.TelegramUserName">@user.TelegramUserName</a>
                             </div>
                         </td>
-                        @*<td class="label-case">
-            <div class="min-label red"><span>×</span></div>
-            <div class="min-label orange"><span>×</span></div>
-            <div class="add-label"><span>+</span></div>
-        </td>*@
                         <td>
                             <div class="dropdown dropleft">
                                 <i class="fas fa-ellipsis-h" data-toggle="dropdown" style="font-family: 'FontAwesome'; color:black;"></i>
@@ -78,23 +72,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-
-
-        <div class="col-sm-2">
-            <h4 class="title">🔖 Мітки</h4>
-            <p class="desc">Додайте до 5 міток щоб простіше орієнтуватись в студентах (В розробці)</p>
-            <div class="btn-dark disabled" style="background-color: #b6b6b6;">Cтворити</div>
-            @*            <div class="label red">
-                    <span class="label-name">Перездача</span>
-                    <div class="label-delete">×</div>
-                </div>
-                <div class="label orange">
-                    <span class="label-name">Участь в конференції</span>
-                    <div class="label-delete">×</div>
-                </div>*@
-            <br />
         </div>
         <div class="col-sm-2">
             <h4 class="title">📢 Оголошення</h4>

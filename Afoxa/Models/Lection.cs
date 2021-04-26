@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Afoxa.Models
 {
-    public class Task
+    public class Lection
     {
         public int Id { get; set; }
 
+        [Required]
         public string Topic { get; set; }
 
-        public string Link { get; set; }
+        [Required]
+        public string MaterialLink { get; set; }
 
         public long UnixTime { get; set; }
+
+        public string ConferenceLink { get; set; }
 
         public int CourseId { get; set; }
 

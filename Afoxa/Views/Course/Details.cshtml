@@ -21,7 +21,7 @@
             <h3 class="header name">@ViewBag.Course.Name</h3>
             <br/>
             <h4 class="subheader">0 завданнь</h4>
-            <h4 class="subheader">0 матеріалів</h4>
+            <h4 class="subheader">@ViewBag.LectionsCount лекцій</h4>
             <h4 class="subheader">@ViewBag.Students.Count студентів</h4>
             @if (ViewBag.Role == "Teacher")
             {

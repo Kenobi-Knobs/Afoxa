@@ -9,23 +9,21 @@ using AppContext = Afoxa.Models.AppContext;
 
 namespace Afoxa.Controllers
 {
-    public class AdController : Controller
+    public class TaskController : Controller
     {
         private readonly AppContext db;
-        private readonly IdentityContext idb;
         private readonly UserManager<User> _userManager;
 
-        public AdController(AppContext context, UserManager<User> userManager, IdentityContext iContext)
+        public TaskController(AppContext context, UserManager<User> userManager)
         {
-            idb = iContext;
             db = context;
             _userManager = userManager;
         }
 
-        // POST: Ad/Create
+        // POST: Task/CreateOrUpdate
         [HttpPost]
         [Authorize(Roles = "Teacher")]
-        public ActionResult Create(Ad ad)
+        public ActionResult CreateOrUpdate(Task task)
         {
             if (!ModelState.IsValid)
             {
@@ -39,7 +37,7 @@ namespace Afoxa.Controllers
 
                 db.Entry(teacher).Collection(c => c.Courses).Load();
 
-                var loadCourse = db.Courses.FirstOrDefault(item => item.Id == ad.CourseId);
+                var loadCourse = db.Courses.FirstOrDefault(item => item.Id == task.CourseId);
 
                 if (loadCourse == null)
                 {
@@ -48,16 +46,25 @@ namespace Afoxa.Controllers
 
                 // teacher is owner this course?
                 if (teacher.Courses.Contains(loadCourse))
-                {                  
-                    db.Adv.Add(ad);
-                    db.SaveChanges();
-                    return Ok(ad.Id);
+                {
+
+                    if (task.Id == 0)
+                    {
+                        db.Tasks.Add(task);
+                        db.SaveChanges();
+                        return Ok(task.Id);
+                    }
+                    else
+                    {
+                        db.Tasks.Update(task);
+                        db.SaveChanges();
+                        return Ok("Update task id=" + task.Id);
+                    }
                 }
                 else
                 {
                     return Forbid();
                 }
-
             }
             catch (Exception)
             {
@@ -65,8 +72,7 @@ namespace Afoxa.Controllers
             }
         }
 
-
-        // POST: Ad/Delete/5
+        // POST:  Task/Delete/5
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         public ActionResult Delete(int? id)
@@ -77,14 +83,14 @@ namespace Afoxa.Controllers
             }
             else
             {
-                var ad = db.Adv.Where(i => i.Id == id).FirstOrDefault();
-                var course = db.Courses.Where(i => i.Id == ad.CourseId).FirstOrDefault();
+                var task = db.Tasks.Where(i => i.Id == id).FirstOrDefault();
+                var course = db.Courses.Where(i => i.Id == task.CourseId).FirstOrDefault();
                 string userName = User.Identity.Name;
                 var user = _userManager.FindByNameAsync(userName);
                 var teacher = db.Teachers.Include(c => c.Courses).Where(t => t.UserId == user.Result.Id).First();
                 db.Entry(teacher).Collection(c => c.Courses).Load();
 
-                if (ad == null)
+                if (task == null)
                 {
                     return NotFound();
                 }
@@ -92,7 +98,7 @@ namespace Afoxa.Controllers
                 // teacher is owner this course?
                 if (teacher.Courses.Contains(course))
                 {
-                    db.Adv.Remove(ad);
+                    db.Tasks.Remove(task);
                     db.SaveChanges();
                     return Ok("Deleted");
                 }
@@ -105,3 +111,4 @@ namespace Afoxa.Controllers
         }
     }
 }
+

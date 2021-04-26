@@ -43,7 +43,7 @@ namespace Afoxa.Controllers
             List<User> Students = new List<User>();
             List<Ad> Ads = new List<Ad>();
 
-            foreach (var ad in db.Adv.ToList())
+            foreach (var ad in db.Adv.ToList())//check
             {
                 if(ad.CourseId == course.Id)
                 {
@@ -103,6 +103,7 @@ namespace Afoxa.Controllers
             {
                 ViewBag.ViewHeader = true;
                 ViewBag.Id = Id;
+                ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
                 return View();
             }
             else
@@ -124,6 +125,10 @@ namespace Afoxa.Controllers
             {
                 ViewBag.ViewHeader = true;
                 ViewBag.Id = Id;
+                ViewBag.Lections = db.Lections.Where(c => c.CourseId == Id);
+                ViewBag.Tasks = db.Tasks.Where(c => c.CourseId == Id);
+                ViewBag.TasksCount = db.Tasks.Where(c => c.CourseId == Id).Count();
+                ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
                 return View();
             }
             else
@@ -326,7 +331,7 @@ namespace Afoxa.Controllers
 
         }
 
-        // POST: Course/AddStuudent
+        // POST: Course/AddStudent
         [HttpPost]
         public ActionResult AddStudent(int? userId, string token)
         {
