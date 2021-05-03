@@ -53,6 +53,10 @@
     font-weight: bold;
 }
 
+.submited {
+    margin-right: 3px;
+}
+
 .title {
     width: 60%;
 }

@@ -9,10 +9,16 @@
 
 <div class="menu">
     <a class="menu-item" href="../Details/@ViewBag.Id"><span class="item-emoji course-emoji">‍@ViewBag.Course.Emoji</span> <span class="item-text">Курс</span></a>
-    <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
+    @if (ViewBag.Role == "Teacher")
+    {
+        <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
+    }
     <a class="menu-item current" href="../Materials/@ViewBag.Id">‍<span class="item-emoji">‍📚</span> <span class="item-text">Матеріали</span></a>
     <a class="menu-item" href="../Marks/@ViewBag.Id">‍<span class="item-emoji">‍✅</span> <span class="item-text">Оцінювання</span></a>
-    <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
+    @if (ViewBag.Role == "Teacher")
+    {
+        <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
+    }
 </div>
 
 <div class="container content" id="@ViewBag.Id">
@@ -65,11 +71,11 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <h5>Лекція 1: Якась хуйня</h5>
-                        <p>21.12.2020 11:40</p>
-                        <p><a href="">Посилання на матеріали</a></p>
-                        <p><a href="">Посилання на конференцію</a></p>
+                    <div class="modal-body" id="lectionShowBody">
+                        <h5 class="topic">Лекція 1: Якась хуйня</h5>
+                        <p class="time">21.12.2020 11:40</p>
+                        <p><a href="" class="mlink" target="_blank">Посилання на матеріали</a></p>
+                        <p><a href="" class="clink" target="_blank"></a></p>
                     </div>
                 </div>
             </div>
@@ -169,27 +175,35 @@
                     <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addTaskModal">+</button>
                 }
             </div>
-                @if (ViewBag.TasksCount == 0)
+            @if (ViewBag.TasksCount == 0)
+            {
+                <div class="item blank-task">
+                    <span class="title">Завдання відсутні.</span>
+                    <span class="date-time">🤷‍</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var task in ViewBag.Tasks)
                 {
-                    <div class="item blank-task">
-                        <span class="title">Завдання відсутні.</span>
-                        <span class="date-time">🤷‍</span>
-                    </div>
-                }
-                else
-                {
-                    @foreach (var task in ViewBag.Tasks)
+                    @if (ViewBag.Role == "Teacher")
                     {
-                        @if (ViewBag.Role == "Teacher")
-                        {
-                            <div class="item" data-toggle="modal" data-target="#editTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link">
-                                <span class="title">@task.Topic</span>
-                                <span class="date-time"></span>
-                            </div>
-                        }
+                        <div class="item" data-role="teacher" data-toggle="modal" data-target="#editTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link data-submited="false">
+                            <span class="title">@task.Topic</span>
+                            <span class="date-time"></span>
+                        </div>
+                    }
+                    @if (ViewBag.Role == "Student")
+                    {
+                        <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submited="false">
+                            <span class="submited"></span>
+                            <span class="title">@task.Topic</span>
+                            <span class="date-time"></span>
+                        </div>
                     }
                 }
-            </div>
+            }
+        </div>
 
 
         <div class="modal fade" id="submitTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -202,21 +216,19 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <h5>Лабораторна 1: Якась хуйня</h5>
-                            <p><a href="">Завдання</a></p>
-                            <br />
+                        <div class="form-group" id="submitTaskBody">
+                            <h5 class="topic">Лабораторна 1: Якась хуйня</h5>
+                            <p><a class="tlink" href="" target="_blank">Завдання</a></p>
                             <p>Додайте посилання на ваше рішення, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
-                            <label for="link">Посилання на відповідь</label>
-                            <input type="text" class="form-control" id="link" aria-describedby="titleHelp">
+                            <label for="submitLink">Посилання на відповідь</label>
+                            <input type="text" class="form-control" id="submitLink" aria-describedby="titleHelp">
                             <br />
                             <label for="message">Коментар</label>
-                            <textarea class="form-control" id="message" rows="3"></textarea>
+                            <textarea class="form-control" id="submitComment" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Здати</button>
+                        <button type="button" class="btn btn-primary submit-btn">Здати</button>
                     </div>
                 </div>
             </div>

@@ -170,6 +170,36 @@ $('.create-task-btn').click(function () {
         });
 });
 
+$('.submit-btn').click(function () {
+    let comment = document.getElementById('submitComment').value;
+    let link = document.getElementById('submitLink').value;
+    let time = Math.floor(day.getTime() / 1000);
+
+    let submition = {
+        Id: 0,
+        Link: link,
+        Comment: comment,
+        UnixTime: time,
+        StudentId: this.dataset.userid,
+        TaskId: this.dataset.taskid,
+        CourseId: $('.content').attr('id'),
+    };
+    $.post('/Submition/Create', submition)
+        .done(function (data) {
+            $('#submitTaskModal').modal('toggle');
+            let items = document.getElementsByClassName('item');
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].dataset.id == submition.TaskId && items[i].dataset.type == 'task') {
+                    items[i].dataset.submition = 'true';
+                }
+            }
+            fixCard();
+        })
+        .fail(function () {
+            alert('error');
+        });
+});
+
 $('.update-task-btn').click(function () {
     let title = document.getElementById('editTaskTopic').value;
     let link = document.getElementById('editTaskLink').value;
@@ -249,6 +279,16 @@ $('body').on('click', '.item', function () {
             }
             break;
         case '#showLectionModal':
+            let body = document.getElementById('lectionShowBody');
+            body.getElementsByClassName('topic')[0].innerText = this.getElementsByClassName('title')[0].innerHTML;
+            body.getElementsByClassName('time')[0].innerText = new Date(parseInt(this.dataset.utime) * 1000).format('dd.mm.yy hh:MM');
+            body.getElementsByClassName('mlink')[0].href = this.dataset.mlink;
+            if (this.dataset.clink !== '') {
+                body.getElementsByClassName('clink')[0].href = this.dataset.clink;
+                body.getElementsByClassName('clink')[0].innerText = 'Посилання на конфернцію';
+            } else {
+                body.getElementsByClassName('clink')[0].innerText = '';
+            }
             break;
         case '#editTaskModal':
             $('#editTaskDate').datepicker().data('datepicker').selectDate(new Date(parseInt(this.dataset.utime) * 1000));
@@ -256,6 +296,25 @@ $('body').on('click', '.item', function () {
             document.getElementById('editTaskLink').value = this.dataset.link;
             document.getElementsByClassName('update-task-btn')[0].dataset.id = this.dataset.id;
             document.getElementsByClassName('delete-task-btn')[0].dataset.id = this.dataset.id;
+            break;
+        case '#submitTaskModal':
+            let submitBody = document.getElementById('submitTaskBody');
+            submitBody.getElementsByClassName('topic')[0].innerText = this.getElementsByClassName('title')[0].innerHTML;
+            submitBody.getElementsByClassName('tlink')[0].href = this.dataset.link;
+            document.getElementsByClassName('submit-btn')[0].dataset.taskid = this.dataset.id;
+            document.getElementsByClassName('submit-btn')[0].dataset.userid = this.dataset.userid;
+            document.getElementById('submitComment').value = '';
+            document.getElementById('submitLink').value = '';
+            if (this.dataset.submition === 'true') {
+                console.log(document.getElementsByClassName('submit-btn')[0]);
+                document.getElementsByClassName('submit-btn')[0].disabled = true;
+                document.getElementById('submitLink').disabled = true;
+                document.getElementById('submitComment').disabled = true;
+            } else {
+                document.getElementsByClassName('submit-btn')[0].disabled = false;
+                document.getElementById('submitLink').disabled = false;
+                document.getElementById('submitComment').disabled = false;
+            }
             break;
     }
 });
@@ -344,6 +403,11 @@ function fixCard() {
         if (items[i].dataset.type == 'task') {
             let text = 'до ' + new Date(parseInt(items[i].dataset.utime) * 1000).format('dd.mm.yy');
             items[i].getElementsByClassName('date-time')[0].innerText = text;
+            if (items[i].dataset.submition === 'true') {
+                items[i].getElementsByClassName('submited')[0].innerText = '✅';
+            } else {
+                items[i].getElementsByClassName('submited')[0].innerTex = '';
+            }
         }
     }
 }

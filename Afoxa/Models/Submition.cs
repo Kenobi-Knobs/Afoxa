@@ -2,24 +2,25 @@
 
 namespace Afoxa.Models
 {
-    public class Lection
+    public class Submition
     {
         public int Id { get; set; }
-
-        [Required]
-        public string Topic { get; set; }
-
-        [Required]
-        public string MaterialLink { get; set; }
         
+        [Required]
+        public string Link { get; set; }
+
+        public string Comment { get; set; }
+
         [Required]
         public long UnixTime { get; set; }
 
-        public string ConferenceLink { get; set; }
-        
+        [Required]
+        public int StudentId { get; set; }
+
         [Required]
         public int CourseId { get; set; }
 
-        public Course Course { get; set; }
+        [Required]
+        public int TaskId { get; set; }
     }
 }
