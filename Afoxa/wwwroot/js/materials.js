@@ -285,7 +285,7 @@ $('body').on('click', '.item', function () {
             body.getElementsByClassName('mlink')[0].href = this.dataset.mlink;
             if (this.dataset.clink !== '') {
                 body.getElementsByClassName('clink')[0].href = this.dataset.clink;
-                body.getElementsByClassName('clink')[0].innerText = 'Посилання на конфернцію';
+                body.getElementsByClassName('clink')[0].innerText = 'Посилання на конференцію';
             } else {
                 body.getElementsByClassName('clink')[0].innerText = '';
             }
@@ -405,8 +405,9 @@ function fixCard() {
             items[i].getElementsByClassName('date-time')[0].innerText = text;
             if (items[i].dataset.submition === 'true') {
                 items[i].getElementsByClassName('submited')[0].innerText = '✅';
-            } else {
-                items[i].getElementsByClassName('submited')[0].innerTex = '';
+            }
+            if (items[i].dataset.submition === 'false') {
+                items[i].getElementsByClassName('submited')[0].innerText = '⏰⁠⁠⁠';
             }
         }
     }

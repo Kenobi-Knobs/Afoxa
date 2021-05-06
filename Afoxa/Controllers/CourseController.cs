@@ -118,6 +118,7 @@ namespace Afoxa.Controllers
                     ViewBag.ViewHeader = true;
                     ViewBag.Id = Id;
                     ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
+                    ViewBag.TasksCount = db.Tasks.Where(c => c.CourseId == Id).Count();
                     return View();
                 }
                 else
@@ -149,7 +150,17 @@ namespace Afoxa.Controllers
                     ViewBag.Tasks = db.Tasks.Where(c => c.CourseId == Id);
                     ViewBag.TasksCount = db.Tasks.Where(c => c.CourseId == Id).Count();
                     ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
-                    ViewBag.StudentId = db.Students.FirstOrDefault(c => c.UserId == UserId).Id;
+                    if (ViewBag.Role == "Student")
+                    {
+                        var StudentId = db.Students.FirstOrDefault(c => c.UserId == UserId).Id;
+                        ViewBag.StudentId = StudentId;
+                        List<int> SubmitionsId = new List<int>();
+                        foreach(var submition in db.Submitions.Where(c => c.StudentId == StudentId && c.CourseId == Id).ToList())
+                        {
+                            SubmitionsId.Add(submition.TaskId);
+                        }
+                        ViewBag.SubmitionsId = SubmitionsId;
+                    }
                     return View();
                 }
                 else

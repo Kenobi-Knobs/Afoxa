@@ -72,8 +72,8 @@
                         </button>
                     </div>
                     <div class="modal-body" id="lectionShowBody">
-                        <h5 class="topic">Лекція 1: Якась хуйня</h5>
-                        <p class="time">21.12.2020 11:40</p>
+                        <h5 class="topic"></h5>
+                        <p class="time"></p>
                         <p><a href="" class="mlink" target="_blank">Посилання на матеріали</a></p>
                         <p><a href="" class="clink" target="_blank"></a></p>
                     </div>
@@ -188,18 +188,30 @@
                 {
                     @if (ViewBag.Role == "Teacher")
                     {
-                        <div class="item" data-role="teacher" data-toggle="modal" data-target="#editTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link data-submited="false">
+                        <div class="item" data-role="teacher" data-toggle="modal" data-target="#editTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link">
                             <span class="title">@task.Topic</span>
                             <span class="date-time"></span>
                         </div>
                     }
                     @if (ViewBag.Role == "Student")
                     {
-                        <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submited="false">
-                            <span class="submited"></span>
-                            <span class="title">@task.Topic</span>
-                            <span class="date-time"></span>
-                        </div>
+                        if (ViewBag.SubmitionsId.Contains(task.Id))
+                        {
+                            <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submition="true">
+                                <span class="submited"></span>
+                                <span class="title">@task.Topic</span>
+                                <span class="date-time"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submition="false">
+                                <span class="submited"></span>
+                                <span class="title">@task.Topic</span>
+                                <span class="date-time"></span>
+                            </div>
+                        }
+
                     }
                 }
             }
@@ -217,7 +229,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group" id="submitTaskBody">
-                            <h5 class="topic">Лабораторна 1: Якась хуйня</h5>
+                            <h5 class="topic"></h5>
                             <p><a class="tlink" href="" target="_blank">Завдання</a></p>
                             <p>Додайте посилання на ваше рішення, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
                             <label for="submitLink">Посилання на відповідь</label>
