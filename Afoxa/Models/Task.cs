@@ -9,11 +9,13 @@ namespace Afoxa.Models
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Topic { get; set; }
 
-        public string Description { get; set; }
+        public string Link { get; set; }
 
-        public float Reward { get; set; }
+        public long UnixTime { get; set; }
+
+        public int CourseId { get; set; }
 
         public Course Course { get; set; }
     }

@@ -26,14 +26,15 @@
 
 .item {
     background-color: #e5e5e5b0;
+    min-width: 300px;
     border-radius: 8px;
     padding: 9px;
     margin-bottom: 5px;
     display: flex;
-    flex-direction: initial;  
+    flex-direction: initial;
 }
 
-.date-time {
+.date-time{
     margin: auto;
     margin-right: 0;
     color: #797979;
@@ -50,6 +51,10 @@
     margin: auto;
     margin-right: 17%;
     font-weight: bold;
+}
+
+.submited {
+    margin-right: 3px;
 }
 
 .title {

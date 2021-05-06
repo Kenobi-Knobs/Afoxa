@@ -24,7 +24,7 @@ namespace Afoxa.Controllers
             _userManager = userManager;
         }
 
-        private void setUserData()
+        private string setUserData()
         {
             string userName = User.Identity.Name;
             var user = _userManager.FindByNameAsync(userName).Result;
@@ -32,40 +32,49 @@ namespace Afoxa.Controllers
 
             ViewBag.Role = roleName;
             ViewBag.TgUser = user;
+
+            return user.Id;
         }
 
-        public void InitializeAsync(int Id)
+        public bool InitializeAsync(int Id)
         {
-            Course course = db.Courses.FirstOrDefault(course => course.Id == Id);
-            db.Entry(course).Collection(c => c.Students).Load();
-            db.Entry(course).Collection(c => c.Teachers).Load();
-            List<User> Teachers = new List<User>();
-            List<User> Students = new List<User>();
-            List<Ad> Ads = new List<Ad>();
-
-            foreach (var ad in db.Adv.ToList())
+            try
             {
-                if(ad.CourseId == course.Id)
+                Course course = db.Courses.FirstOrDefault(course => course.Id == Id);
+                db.Entry(course).Collection(c => c.Students).Load();
+                db.Entry(course).Collection(c => c.Teachers).Load();
+                List<User> Teachers = new List<User>();
+                List<User> Students = new List<User>();
+                List<Ad> Ads = new List<Ad>();
+
+                foreach (var ad in db.Adv.ToList())//check
                 {
-                    Ads.Add(ad);
+                    if (ad.CourseId == course.Id)
+                    {
+                        Ads.Add(ad);
+                    }
                 }
-            }
 
-            foreach (var teacher in course.Teachers)
+                foreach (var teacher in course.Teachers)
+                {
+                    var user = idb.Users.FirstOrDefault(user => user.Id == teacher.UserId);
+                    Teachers.Add(user);
+                }
+                foreach (var student in course.Students)
+                {
+                    var user = idb.Users.FirstOrDefault(user => user.Id == student.UserId);
+                    Students.Add(user);
+                }
+
+                ViewBag.Ads = Ads;
+                ViewBag.Teachers = Teachers;
+                ViewBag.Students = Students;
+                ViewBag.Course = course;
+                return true;
+            }catch
             {
-                var user = idb.Users.FirstOrDefault(user => user.Id == teacher.UserId);
-                Teachers.Add(user);
+                return false;
             }
-            foreach (var student in course.Students)
-            {
-                var user = idb.Users.FirstOrDefault(user => user.Id == student.UserId);
-                Students.Add(user);
-            }
-            
-            ViewBag.Ads = Ads;
-            ViewBag.Teachers = Teachers;
-            ViewBag.Students = Students;
-            ViewBag.Course = course;
         }
 
         [Authorize(Roles = "Teacher")]
@@ -76,15 +85,19 @@ namespace Afoxa.Controllers
                 return NotFound();
             }
             setUserData();
-            InitializeAsync(Id);
-
-            if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+            if(InitializeAsync(Id))
             {
-                ViewBag.ViewHeader = true;
-                ViewBag.Id = Id;
-                return View();
-            }
-            else
+                if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+                {
+                    ViewBag.ViewHeader = true;
+                    ViewBag.Id = Id;
+                    return View();
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }else
             {
                 return Forbid();
             }
@@ -98,17 +111,25 @@ namespace Afoxa.Controllers
                 return NotFound();
             }
             setUserData();
-            InitializeAsync(Id);
-            if(ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            if (InitializeAsync(Id))
             {
-                ViewBag.ViewHeader = true;
-                ViewBag.Id = Id;
-                return View();
+                if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+                {
+                    ViewBag.ViewHeader = true;
+                    ViewBag.Id = Id;
+                    ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
+                    ViewBag.TasksCount = db.Tasks.Where(c => c.CourseId == Id).Count();
+                    return View();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
             else
             {
                 return Forbid();
-            }    
+            }
         }
 
         [Authorize]
@@ -118,13 +139,34 @@ namespace Afoxa.Controllers
             {
                 return NotFound();
             }
-            setUserData();
-            InitializeAsync(Id);
-            if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            var UserId = setUserData();
+            if (InitializeAsync(Id))
             {
-                ViewBag.ViewHeader = true;
-                ViewBag.Id = Id;
-                return View();
+                if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+                {
+                    ViewBag.ViewHeader = true;
+                    ViewBag.Id = Id;
+                    ViewBag.Lections = db.Lections.Where(c => c.CourseId == Id);
+                    ViewBag.Tasks = db.Tasks.Where(c => c.CourseId == Id);
+                    ViewBag.TasksCount = db.Tasks.Where(c => c.CourseId == Id).Count();
+                    ViewBag.LectionsCount = db.Lections.Where(c => c.CourseId == Id).Count();
+                    if (ViewBag.Role == "Student")
+                    {
+                        var StudentId = db.Students.FirstOrDefault(c => c.UserId == UserId).Id;
+                        ViewBag.StudentId = StudentId;
+                        List<int> SubmitionsId = new List<int>();
+                        foreach(var submition in db.Submitions.Where(c => c.StudentId == StudentId && c.CourseId == Id).ToList())
+                        {
+                            SubmitionsId.Add(submition.TaskId);
+                        }
+                        ViewBag.SubmitionsId = SubmitionsId;
+                    }
+                    return View();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
             else
             {
@@ -140,12 +182,18 @@ namespace Afoxa.Controllers
                 return NotFound();
             }
             setUserData();
-            InitializeAsync(Id);
-            if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+            if (InitializeAsync(Id))
             {
-                ViewBag.ViewHeader = true;
-                ViewBag.Id = Id;
-                return View();
+                if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
+                {
+                    ViewBag.ViewHeader = true;
+                    ViewBag.Id = Id;
+                    return View();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
             else
             {
@@ -161,13 +209,18 @@ namespace Afoxa.Controllers
                 return NotFound();
             }
             setUserData();
-            InitializeAsync(Id);
-
-            if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+            if (InitializeAsync(Id))
             {
-                ViewBag.ViewHeader = true;
-                ViewBag.Id = Id;
-                return View();
+                if (ViewBag.Teachers.Contains(ViewBag.TgUser))
+                {
+                    ViewBag.ViewHeader = true;
+                    ViewBag.Id = Id;
+                    return View();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
             else
             {
@@ -326,7 +379,7 @@ namespace Afoxa.Controllers
 
         }
 
-        // POST: Course/AddStuudent
+        // POST: Course/AddStudent
         [HttpPost]
         public ActionResult AddStudent(int? userId, string token)
         {

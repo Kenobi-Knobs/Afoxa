@@ -9,32 +9,57 @@
 
 <div class="menu">
     <a class="menu-item" href="../Details/@ViewBag.Id"><span class="item-emoji course-emoji">‍@ViewBag.Course.Emoji</span> <span class="item-text">Курс</span></a>
-    <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
+    @if (ViewBag.Role == "Teacher")
+    {
+        <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
+    }
     <a class="menu-item current" href="../Materials/@ViewBag.Id">‍<span class="item-emoji">‍📚</span> <span class="item-text">Матеріали</span></a>
     <a class="menu-item" href="../Marks/@ViewBag.Id">‍<span class="item-emoji">‍✅</span> <span class="item-text">Оцінювання</span></a>
-    <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
+    @if (ViewBag.Role == "Teacher")
+    {
+        <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
+    }
 </div>
 
 <div class="container content" id="@ViewBag.Id">
     <br />
     <div class="row">
-        <div class="col-xs-6 category">
+
+        <div class="col-xs-6 category" id="lections">
             <div class="category-head">
                 <h4 class="header">🎙 Лекції</h4>
-                <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addLectionModal">+</button>
+                @if (ViewBag.Role == "Teacher")
+                {
+                    <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#CreateLectionModal">+</button>
+                }
             </div>
-            <div class="item" data-toggle="modal" data-target="#editLectionModal">
-                <span class="title">Лекція 1: Тупа хуйня тупої хуйні</span>
-                <span class="date-time">21.12.2020 11:40 🔗</span>
-            </div>
-            <div class="item" data-toggle="modal" data-target="#showLectionModal">
-                <span class="title">Лекція 1: Тупа </span>
-                <span class="date-time">21.12.2020 11:40 🔗</span>
-            </div>
-            <div class="item" data-toggle="modal" data-target="#editLectionModal">
-                <span class="title">Лекція 1: Тупа хуйня тупої хуйніfsdfsd  </span>
-                <span class="date-time">21.12.2020 11:40 👀</span>
-            </div>
+            @if (ViewBag.LectionsCount == 0)
+            {
+                <div class="item blank-lection">
+                    <span class="title">Лекції відсутні.</span>
+                    <span class="date-time">🤷‍</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var lect in ViewBag.Lections)
+                {
+                    @if (ViewBag.Role == "Teacher")
+                    {
+                        <div class="item" data-toggle="modal" data-target="#EditLectionModal" data-type="lection" data-utime="@lect.UnixTime" data-id="@lect.Id" data-mlink="@lect.MaterialLink" data-clink="@lect.ConferenceLink">
+                            <span class="title">@lect.Topic</span>
+                            <span class="date-time"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="item" data-toggle="modal" data-target="#showLectionModal" data-type="lection" data-utime="@lect.UnixTime" data-id="@lect.Id" data-mlink="@lect.MaterialLink" data-clink="@lect.ConferenceLink">
+                            <span class="title">@lect.Topic</span>
+                            <span class="date-time"></span>
+                        </div>
+                    }
+                }
+            }
         </div>
 
         <div class="modal fade" id="showLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -46,17 +71,17 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <h5>Лекція 1: Якась хуйня</h5>
-                        <p>21.12.2020 11:40</p>
-                        <p><a href="">Посилання на матеріали</a></p>
-                        <p><a href="">Посилання на конференцію</a></p>
+                    <div class="modal-body" id="lectionShowBody">
+                        <h5 class="topic"></h5>
+                        <p class="time"></p>
+                        <p><a href="" class="mlink" target="_blank">Посилання на матеріали</a></p>
+                        <p><a href="" class="clink" target="_blank"></a></p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="addLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="CreateLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -68,11 +93,11 @@
                     <div class="modal-body">
                         <p>Додайте назву та посилання на матеріали лекції, створити конспект лекції можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
                         <div class="form-group">
-                            <label for="title">Тема заннятя</label>
-                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <label for="topicCreate">Тема заннятя</label>
+                            <input type="text" class="form-control" id="topicCreate" aria-describedby="titleHelp">
                             <br />
-                            <label for="inputTitle">Посилання на матеріали</label>
-                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <label for="materialLinkCreate">Посилання на матеріали</label>
+                            <input type="text" class="form-control" id="materialLinkCreate" aria-describedby="titleHelp">
                             <small id="titleHelp" class="form-text text-muted">Студент переходитиме по цьому посиланню при кліці на лекцію.</small>
                             <br />
                             <label for="date">Дата та час проведення</label>
@@ -81,26 +106,25 @@
 
                         <div class="form-group">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="isRemote">
-                                <label class="form-check-label" for="isRemote">Дистанційна лекція</label>
-                                <br />
+                                <input type="checkbox" class="form-check-input is-distant" id="isDistantCreate">
+                                <label class="form-check-label" for="isDistantCreate">Дистанційна лекція</label>
+                                <br/>
                             </div>
                             <div class="remote">
-                                <label for="remoteLink">Посилання на лекцію</label>
-                                <input type="text" class="form-control" id="remoteLink" aria-describedby="titleHelp">
+                                <label for="conferenceLinkCreate">Посилання на лекцію</label>
+                                <input type="text" class="form-control clink" id="conferenceLinkCreate" aria-describedby="titleHelp">
                                 <small id="remoteLink" class="form-text text-muted">Посилання для приєднання до онлайн конференції</small>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Додати</button>
+                        <button type="button" class="btn btn-primary create-lection-btn">Додати</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="editLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="EditLectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -111,56 +135,88 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="title">Тема заннятя</label>
-                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <label for="topicEdit">Тема заннятя</label>
+                            <input type="text" class="form-control" id="topicEdit" aria-describedby="titleHelp">
                             <br />
-                            <label for="inputTitle">Посилання на матеріали</label>
-                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <label for="materialLinkEdit">Посилання на матеріали</label>
+                            <input type="text" class="form-control" id="materialLinkEdit" aria-describedby="titleHelp">
                             <small id="titleHelp" class="form-text text-muted">Студент переходитиме по цьому посиланню при кліці на лекцію.</small>
                             <br />
                             <label for="date">Дата та час проведення</label>
-                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                            <div id="dateLectionEdit" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
                         </div>
 
                         <div class="form-group">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="isRemote">
-                                <label class="form-check-label" for="isRemote">Дистанційна лекція</label>
+                                <input type="checkbox" class="form-check-input is-distant" id="isDistantEdit">
+                                <label class="form-check-label" for="isDistantEdit">Дистанційна лекція</label>
                                 <br />
                             </div>
                             <div class="remote">
-                                <label for="remoteLink">Посилання на лекцію</label>
-                                <input type="text" class="form-control" id="remoteLink" aria-describedby="titleHelp">
-                                <small id="remoteLink" class="form-text text-muted">Посилання для приєднання до онлайн конференції</small>
+                                <label for="conferenceLinkEdit">Посилання на лекцію</label>
+                                <input type="text" class="form-control clink" id="conferenceLinkEdit" aria-describedby="titleHelp">
+                                <small id="confHelp" class="form-text text-muted">Посилання для приєднання до онлайн конференції</small>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Зберегти</button>
+                        <button type="button" class="btn btn-danger delete-lection-btn">Видалити</button>
+                        <button type="button" class="btn btn-primary update-lection-btn">Зберегти</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xs-6 category">
+        <div class="col-xs-6 category" id="tasks">
             <div class="category-head">
                 <h4 class="header">📝 Завдання</h4>
-                <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addTaskModal">+</button>
+                @if (ViewBag.Role == "Teacher")
+                {
+                    <button type="button" class="btn btn-dark add-btn" data-toggle="modal" data-target="#addTaskModal">+</button>
+                }
             </div>
-            <div class="item" data-toggle="modal" data-target="#editTaskModal">
-                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні та такої</span>
-                <span class="date-time">до 21.12.2020</span>
-            </div>
-            <div class="item" data-toggle="modal" data-target="#submitTaskModal">
-                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні</span>
-                <span class="date-time">до 21.12.2020</span>
-            </div>
-            <div class="item" data-toggle="modal" data-target="#editTaskModal">
-                <span class="title">Лабораторна 1: Тупа хуйня тупої хуйні</span>
-                <span class="date-time">до 21.12.2020</span>
-            </div>
+            @if (ViewBag.TasksCount == 0)
+            {
+                <div class="item blank-task">
+                    <span class="title">Завдання відсутні.</span>
+                    <span class="date-time">🤷‍</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var task in ViewBag.Tasks)
+                {
+                    @if (ViewBag.Role == "Teacher")
+                    {
+                        <div class="item" data-role="teacher" data-toggle="modal" data-target="#editTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link">
+                            <span class="title">@task.Topic</span>
+                            <span class="date-time"></span>
+                        </div>
+                    }
+                    @if (ViewBag.Role == "Student")
+                    {
+                        if (ViewBag.SubmitionsId.Contains(task.Id))
+                        {
+                            <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submition="true">
+                                <span class="submited"></span>
+                                <span class="title">@task.Topic</span>
+                                <span class="date-time"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="item" data-role="student" data-toggle="modal" data-target="#submitTaskModal" data-type="task" data-utime="@task.UnixTime" data-id="@task.Id" data-link="@task.Link" data-userid="@ViewBag.StudentId" data-submition="false">
+                                <span class="submited"></span>
+                                <span class="title">@task.Topic</span>
+                                <span class="date-time"></span>
+                            </div>
+                        }
+
+                    }
+                }
+            }
         </div>
+
 
         <div class="modal fade" id="submitTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -172,21 +228,19 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <h5>Лабораторна 1: Якась хуйня</h5>
-                            <p><a href="">Завдання</a></p>
-                            <br />
+                        <div class="form-group" id="submitTaskBody">
+                            <h5 class="topic"></h5>
+                            <p><a class="tlink" href="" target="_blank">Завдання</a></p>
                             <p>Додайте посилання на ваше рішення, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
-                            <label for="link">Посилання на відповідь</label>
-                            <input type="text" class="form-control" id="link" aria-describedby="titleHelp">
+                            <label for="submitLink">Посилання на відповідь</label>
+                            <input type="text" class="form-control" id="submitLink" aria-describedby="titleHelp">
                             <br />
                             <label for="message">Коментар</label>
-                            <textarea class="form-control" id="message" rows="3"></textarea>
+                            <textarea class="form-control" id="submitComment" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Здати</button>
+                        <button type="button" class="btn btn-primary submit-btn">Здати</button>
                     </div>
                 </div>
             </div>
@@ -204,20 +258,19 @@
                     <div class="modal-body">
                         <p>Додайте назву та посилання на завдання, створити його можна за допомогою <a href="https://telegra.ph/" target="_blank">Telegraph</a> або додати посилання на документ в хмарі.</p>
                         <div class="form-group">
-                            <label for="title">Тема</label>
-                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <label for="createTaskTitle">Тема</label>
+                            <input type="text" class="form-control" id="createTaskTitle">
                             <br />
-                            <label for="inputTitle">Посилання на завдання</label>
-                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <label for="createTaskLink">Посилання на завдання</label>
+                            <input type="text" class="form-control" id="createTaskLink">
                             <small id="titleHelp" class="form-text text-muted">Посилання на матеріали завдання.</small>
                             <br />
                             <label for="date">Дедлайн</label>
-                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                            <div id="createTaskDate" class="date-task-create" data-timepicker="false"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Додати</button>
+                        <button type="button" class="btn btn-primary create-task-btn">Додати</button>
                     </div>
                 </div>
             </div>
@@ -234,20 +287,20 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="title">Тема</label>
-                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+                            <label for="editTaskTopic">Тема</label>
+                            <input type="text" class="form-control" id="editTaskTopic" aria-describedby="titleHelp">
                             <br />
-                            <label for="inputTitle">Посилання на завдання</label>
-                            <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+                            <label for="editTaskLink">Посилання на завдання</label>
+                            <input type="text" class="form-control" id="editTaskLink" aria-describedby="titleHelp">
                             <small id="titleHelp" class="form-text text-muted">Посилання на матеріали завдання.</small>
                             <br />
                             <label for="date">Дедлайн</label>
-                            <div id="date" class="date" data-timepicker="true" data-time-format='hh:ii'></div>
+                            <div id="editTaskDate" class="date-task-edit" data-timepicker="false"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                        <button type="button" class="btn btn-primary kick-usr">Зберегти</button>
+                        <button type="button" class="btn btn-danger delete-task-btn">Видалити</button>
+                        <button type="button" class="btn btn-primary update-task-btn">Зберегти</button>
                     </div>
                 </div>
             </div>
