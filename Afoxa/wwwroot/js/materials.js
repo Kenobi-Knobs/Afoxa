@@ -173,7 +173,7 @@ $('.create-task-btn').click(function () {
 $('.submit-btn').click(function () {
     let comment = document.getElementById('submitComment').value;
     let link = document.getElementById('submitLink').value;
-    let time = Math.floor(day.getTime() / 1000);
+    let time = Math.floor(new Date().getTime() / 1000);
 
     let submition = {
         Id: 0,

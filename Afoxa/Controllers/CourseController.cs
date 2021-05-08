@@ -186,6 +186,21 @@ namespace Afoxa.Controllers
             {
                 if (ViewBag.Teachers.Contains(ViewBag.TgUser) || ViewBag.Students.Contains(ViewBag.TgUser))
                 {
+                    if (ViewBag.Role == "Teacher")
+                    {
+                        List<Submition> UnmarkedSubmitions = db.Submitions.Where(c => c.CourseId == Id && c.Mark == -1).ToList();
+                        List<User> SubmitionStudents = new List<User>();
+                        List<Task> SubmitionTasks = new List<Task>();
+                        foreach (Submition submition in UnmarkedSubmitions)
+                        {
+                            string UserId = db.Students.FirstOrDefault(s => s.Id == submition.StudentId).UserId;
+                            SubmitionStudents.Add(idb.Users.FirstOrDefault(u => u.Id == UserId));
+                            SubmitionTasks.Add(db.Tasks.FirstOrDefault(t => t.Id == submition.TaskId));
+                        }
+                        ViewBag.UnmarkedSubmitions = UnmarkedSubmitions;
+                        ViewBag.SubmitionStudents = SubmitionStudents;
+                        ViewBag.SubmitionTasks = SubmitionTasks;
+                    }
                     ViewBag.ViewHeader = true;
                     ViewBag.Id = Id;
                     return View();

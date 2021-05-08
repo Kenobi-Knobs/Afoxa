@@ -3,24 +3,127 @@
 }
 
 @section Styles {
+    <link href="@Url.Content("/js/dist/css/datepicker.min.css")" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="@Url.Content("/css/marks.css")">
 }
 
 <div class="menu">
     <a class="menu-item" href="../Details/@ViewBag.Id"><span class="item-emoji course-emoji">‍@ViewBag.Course.Emoji</span> <span class="item-text">Курс</span></a>
-    @if (ViewBag.Role == "Teacher")
-    {
-        <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
-    }
+    <a class="menu-item" href="../Students/@ViewBag.Id"><span class="item-emoji">‍🎓</span> <span class="item-text">Студенти</span></a>
     <a class="menu-item" href="../Materials/@ViewBag.Id">‍<span class="item-emoji">‍📚</span> <span class="item-text">Матеріали</span></a>
     <a class="menu-item current" href="../Marks/@ViewBag.Id">‍<span class="item-emoji">‍✅</span> <span class="item-text">Оцінювання</span></a>
-    @if (ViewBag.Role == "Teacher")
-    {
-        <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
-    }
+    <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
 </div>
 
-<div class="container content" id="@ViewBag.Id"></div>
+<div class="container content">
+    <div class="row">
+        <div class="col-xs-8 category" id="students">
+            @if (ViewBag.Role == "Teacher")
+            {
+                <h4>‍🎓 Студенти</h4>
+                <div class="user-list">
+                    @foreach (var user in ViewBag.Students)
+                    {
+                        <div class="user-card" data-toggle="modal" data-target="#ShowStudentModal" data-avatar="@user.TelegramPhotoUrl" data-username="@user.TelegramUserName">
+                            <img class="user-avatar" src="@user.TelegramPhotoUrl" />
+                            <a class="card-username" target="_blank" href="https://t.me/@user.TelegramUserName">@user.TelegramUserName</a>
+                            <span class="mark">0</span>
+                        </div>
+                    }
+                </div>
+                <div class="modal fade" id="ShowStudentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">🎓 Студент</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="user">
+                                    <img id="userModalAvatar" class="user-avatar" src="" />
+                                    <a  id="userModalName" class="card-username" target="_blank" href=""></a>
+                                </div>
+                                <div class="modal-submitions">
+                                    <div class="modal-submition">
+                                        <span class="submition-date">07.05.21 17:40</span>
+                                        <span class="task-name">task 3</span>
+                                        <span class="mark">10</span>
+                                    </div>
+                                </div>
+                                <div class="final">
+                                    <span>Результат:</span>
+                                    <span class="mark">100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (ViewBag.Role == "Student")
+            {
+                <h4>перевірені завдання</h4>
+            }
+        </div>
+        <div class="col-xs-4 category" id="submitions">
+            @if (ViewBag.Role == "Teacher")
+            {
+                <h4>✉️ Здані завдання</h4>
+                @for (int i = 0; i < ViewBag.UnmarkedSubmitions.Count; i++)
+                {
+                    <div class="submition-card" data-toggle="modal" data-target="#ShowSubmitionModal" data-avatar="@ViewBag.SubmitionStudents[i].TelegramPhotoUrl" data-username="@ViewBag.SubmitionStudents[i].TelegramUserName" data-utime="@ViewBag.UnmarkedSubmitions[i].UnixTime" data-link="@ViewBag.UnmarkedSubmitions[i].Link" data-comment="@ViewBag.UnmarkedSubmitions[i].Comment" data-task="@ViewBag.SubmitionTasks[i].Topic">
+                        <div class="line-container">
+                            <span>📝</span>
+                            <span class="subm-username">@ViewBag.SubmitionStudents[i].TelegramUserName</span>
+                            <span class="datetime" data-utime="@ViewBag.UnmarkedSubmitions[i].UnixTime"></span>
+                        </div>
+                        <span class="topic">@ViewBag.SubmitionTasks[i].Topic</span>
+                    </div>
+                }
+
+                <div class="modal fade" id="ShowSubmitionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">📝 Завдання на перевірку</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="user">
+                                    <img id="modalAvatar" class="user-avatar" src=""/>
+                                    <a id="modalUsername" class="card-username" target="_blank" href=""></a>
+                                    <span id="modalDate"></span>
+                                </div>
+                                <div class="answer">
+                                    <h6 id="modalTask"></h6>
+                                    <a id="modalLink" href="">Посилання на відповідь</a>
+                                    <br />
+                                    <span id="modalCommentLabel">Коментар:</span>
+                                    <span id="modalComment" class="comment"></span>
+                                </div>
+                                <div class="mark-selector">
+                                    <label for="modalMark">Оцінка:</label>
+                                    <input type="number" min="0" class="form-control" id="modalMark">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" id="cancelBtn">Відхилити</button>
+                                <button type="button" class="btn btn-primary" id="markBtn" disable>Оцінити</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (ViewBag.Role == "Student")
+            {
+                <h4>✉️ Завдання на перевірці</h4>
+            }
+        </div>
+    </div>
+</div>
 
 @section Scripts
 {
