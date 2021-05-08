@@ -11,6 +11,8 @@ namespace Afoxa.Models
 
         public string Comment { get; set; }
 
+        public int Mark { get; set; }
+
         [Required]
         public long UnixTime { get; set; }
 

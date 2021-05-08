@@ -59,6 +59,7 @@ namespace Afoxa.Controllers
                 {
                     if (submition.Id == 0)
                     {
+                        submition.Mark = -1;
                         db.Submitions.Add(submition);
                         db.SaveChanges();
                         return Ok(submition.Id);
