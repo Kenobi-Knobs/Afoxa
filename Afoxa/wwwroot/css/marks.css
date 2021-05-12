@@ -12,6 +12,14 @@
     min-width: 300px;
 }
 
+#modalFiller {
+    margin-left: 30%;
+}
+
+#finalMark {
+    margin-right: 20px;
+}
+
 .modal-submition {
     display: flex;
     flex-direction: row;
