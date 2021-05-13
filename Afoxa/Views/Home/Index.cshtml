@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="@Url.Content("/css/home.css")">
 }
 
-<div class="text-center">
+<div class="text-center" id="content" data-role="@ViewBag.Role">
     @if (@ViewBag.Role == "Teacher")
     {
         <h2 class="greeting"><span class="time">Доброго дня</span>, @ViewBag.TgUser.TelegramFirstName</h2>
@@ -67,7 +67,27 @@
     }
     else
     {
-        <h5>Dashboard for student is not ready</h5>
+        <h2 class="greeting"><span class="time">Доброго дня</span>, @ViewBag.TgUser.TelegramFirstName</h2>
+        if (@ViewBag.Student.Courses.Count > 0)
+        {
+            <p class="subtext">Ось ваші курси:</p>
+        }
+        else
+        {
+            <p class="subtext">Ого, тут порожньо</p>
+        }
+        <div class="course-list">
+            @foreach (var course in ViewBag.Student.Courses)
+            {
+                <button class="course-card redirect-button" id="@course.Id">
+                    <div class="course-icon">
+                        <span>@course.Emoji</span>
+                    </div>
+                    <p class="course-name">@course.Name</p>
+                </button>
+                <br />
+            }
+        </div>
     }
 </div>
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js"></script>

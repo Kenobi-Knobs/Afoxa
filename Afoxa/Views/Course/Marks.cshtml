@@ -21,7 +21,7 @@
     }
 </div>
 
-<div class="container content" id="@ViewBag.Id" data-role="ViewBag.Role">
+<div class="container content" id="@ViewBag.Id" data-role="@ViewBag.Role">
     <div class="row">
         <div class="col-xs-8 category" id="students">
             @if (ViewBag.Role == "Teacher")
@@ -63,7 +63,12 @@
             }
             @if (ViewBag.Role == "Student")
             {
-                <h4>перевірені завдання</h4>
+                <h4>👀 Перевірені завдання</h4>
+                <div class="checked-container" id="@ViewBag.TgUser.Id">
+                    <div class="checked-submitions" >
+                    </div>
+                    <div class="checked-final"></div>
+                </div>
             }
         </div>
         <div class="col-xs-4 category" id="submitions">
@@ -93,7 +98,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="user">
-                                    <img id="modalAvatar" class="user-avatar" src=""/>
+                                    <img id="modalAvatar" class="user-avatar" src="" />
                                     <a id="modalUsername" class="card-username" target="_blank" href=""></a>
                                     <span id="modalDate"></span>
                                 </div>
@@ -120,6 +125,15 @@
             @if (ViewBag.Role == "Student")
             {
                 <h4>✉️ Завдання на перевірці</h4>
+                @for (int i = 0; i < ViewBag.UnmarkedSubmitions.Count; i++)
+                {
+                    <div class="submition-card" data-utime="@ViewBag.UnmarkedSubmitions[i].UnixTime" data-link="@ViewBag.UnmarkedSubmitions[i].Link" data-comment="@ViewBag.UnmarkedSubmitions[i].Comment" data-task="@ViewBag.SubmitionTasks[i].Topic" id="@ViewBag.UnmarkedSubmitions[i].Id">
+                        <div class="line-container submition-check">
+                            <span>📝 @ViewBag.SubmitionTasks[i].Topic</span>
+                            <span class="datetime" data-utime="@ViewBag.UnmarkedSubmitions[i].UnixTime"></span>
+                        </div>
+                    </div>
+                }
             }
         </div>
     </div>
