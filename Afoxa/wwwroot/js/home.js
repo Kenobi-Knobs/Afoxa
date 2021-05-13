@@ -1,7 +1,10 @@
 ﻿'use strict';
 
-document.querySelector('emoji-picker')
-    .addEventListener('emoji-click', event => replaceEmoji(event.detail));
+if (document.getElementById('content').dataset.role == 'Teacher') {
+    document.querySelector('emoji-picker')
+        .addEventListener('emoji-click', event => replaceEmoji(event.detail));
+}
+
 
 $('document').ready(function () {
     let date = new Date();

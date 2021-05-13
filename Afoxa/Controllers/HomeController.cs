@@ -30,6 +30,12 @@ namespace Afoxa.Controllers
 
         private void setStudentData()
         {
+            string userName = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(userName).Result;
+            var student = db.Students.Where(u => u.UserId == user.Id).FirstOrDefault();
+            db.Entry(student).Collection(c => c.Courses).Load();
+
+            ViewBag.Student = student;
         }
 
         private void setUserData()

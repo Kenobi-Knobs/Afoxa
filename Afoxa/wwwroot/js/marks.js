@@ -4,6 +4,54 @@ $('document').ready(function () {
     fixCard();
     if (document.getElementsByClassName('content')[0].dataset.role == "Teacher") {
         setMarks();
+    } else {
+        let userId = document.getElementsByClassName('checked-container')[0].id;
+        let courseId = document.getElementsByClassName('content')[0].id;
+        $.get('/Submition/GetUserSubmitions', { userId: userId, courseId: courseId })
+            .done(function (data) {
+                let finalMark = 0;
+                let counter = 0;
+                for (let key in data) {
+                    if (data[key].mark !== -1) {
+                        let submition = document.createElement('div');
+                        submition.classList.add('checked-submition');
+
+                        let date = document.createElement('span');
+                        date.classList.add('submition-date');
+                        date.innerText = new Date(parseInt(data[key].unixTime) * 1000).format('dd.mm.yy HH:MM');
+
+                        let name = document.createElement('span');
+                        name.classList.add('task-name');
+                        name.innerText = key
+
+                        let mark = document.createElement('span');
+                        mark.classList.add('mark');
+                        mark.innerText = data[key].mark;
+                        finalMark += data[key].mark;
+
+                        submition.appendChild(date);
+                        submition.appendChild(name);
+                        submition.appendChild(mark);
+
+                        document.getElementsByClassName('checked-submitions')[0].appendChild(submition);
+                        counter++
+                    }        
+                }
+                if (counter == 0) {
+                    let filler = document.createElement('div');
+                    filler.classList.add('checked-submition');
+                    filler.innerText = 'Немає нічогісінько 🤷‍';
+                    document.getElementsByClassName('checked-submitions')[0].appendChild(filler);
+                } else {
+                    let final = document.createElement('div');
+                    final.classList.add('final');
+                    final.innerHTML = 'Поточна оцінка: <span class="mark" id="finalMark">' + finalMark + '</span>';
+                    document.getElementsByClassName('checked-submitions')[0].appendChild(final);
+                }
+            })
+            .fail(function () {
+                alert('error');
+            });
     }
 });
 

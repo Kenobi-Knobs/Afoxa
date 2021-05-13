@@ -201,6 +201,23 @@ namespace Afoxa.Controllers
                         ViewBag.SubmitionStudents = SubmitionStudents;
                         ViewBag.SubmitionTasks = SubmitionTasks;
                     }
+                    else
+                    {
+                        string userId = ViewBag.TgUser.Id;
+                        var student = db.Students.FirstOrDefault(s => s.UserId == userId);
+
+
+                        List<Submition> UnmarkedSubmitions = db.Submitions.Where(c => c.CourseId == Id && c.Mark == -1 && c.StudentId == student.Id).ToList();
+                        List<Task> SubmitionTasks = new List<Task>();
+                        foreach (Submition submition in UnmarkedSubmitions)
+                        {
+                            SubmitionTasks.Add(db.Tasks.FirstOrDefault(t => t.Id == submition.TaskId));
+                        }
+                        ViewBag.UnmarkedSubmitions = UnmarkedSubmitions;
+                        ViewBag.SubmitionTasks = SubmitionTasks;
+                    }
+
+
                     ViewBag.ViewHeader = true;
                     ViewBag.Id = Id;
                     return View();
