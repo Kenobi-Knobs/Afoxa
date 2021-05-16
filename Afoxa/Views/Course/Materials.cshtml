@@ -15,10 +15,6 @@
     }
     <a class="menu-item current" href="../Materials/@ViewBag.Id">‍<span class="item-emoji">‍📚</span> <span class="item-text">Матеріали</span></a>
     <a class="menu-item" href="../Marks/@ViewBag.Id">‍<span class="item-emoji">‍✅</span> <span class="item-text">Оцінювання</span></a>
-    @if (ViewBag.Role == "Teacher")
-    {
-        <a class="menu-item" href="../Settings/@ViewBag.Id">‍<span class="item-emoji">‍⚙️</span> <span class="item-text">Налаштування</span></a>
-    }
 </div>
 
 <div class="container content" id="@ViewBag.Id">

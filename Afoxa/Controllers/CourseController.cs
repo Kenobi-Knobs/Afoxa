@@ -233,33 +233,6 @@ namespace Afoxa.Controllers
             }
         }
 
-        [Authorize(Roles = "Teacher")]
-        public ActionResult Settings(int Id)
-        {
-            if (Id == 0)
-            {
-                return NotFound();
-            }
-            setUserData();
-            if (InitializeAsync(Id))
-            {
-                if (ViewBag.Teachers.Contains(ViewBag.TgUser))
-                {
-                    ViewBag.ViewHeader = true;
-                    ViewBag.Id = Id;
-                    return View();
-                }
-                else
-                {
-                    return Forbid();
-                }
-            }
-            else
-            {
-                return Forbid();
-            }
-        }
-
         // POST: Course/CreateOrUpdate
         [HttpPost]
         [Authorize(Roles = "Teacher")]
