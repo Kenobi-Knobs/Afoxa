@@ -26,9 +26,13 @@ namespace Afoxa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(int id, string userName, string firstName, string status)
+        public async Task<IActionResult> Register(int id, string userName, string firstName, string status, string chatId, string BotToken)
         {
-            User user = new User { Email = id.ToString(), UserName = id.ToString(), TelegramFirstName = firstName, TelegramId = id, TelegramUserName = userName, Role = status};
+            if (BotToken != AppConfiguration["BotToken"])
+            {
+                return Forbid();
+            }
+            User user = new User { Email = id.ToString(), UserName = id.ToString(), TelegramFirstName = firstName, TelegramId = id, TelegramUserName = userName, Role = status, TelegramChatId = chatId};
             // добавляем пользователя
             var result = await _userManager.CreateAsync(user);
 

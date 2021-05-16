@@ -12,4 +12,6 @@
     <PackageReference Include="Telegram.Bot.Extensions.LoginWidget" Version="1.2.0" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>
