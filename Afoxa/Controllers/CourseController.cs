@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -16,9 +17,12 @@ namespace Afoxa.Controllers
         private readonly AppContext db;
         private readonly IdentityContext idb;
         private readonly UserManager<User> _userManager;
+        public IConfiguration AppConfiguration { get; set; }
 
         public CourseController(AppContext context, UserManager<User> userManager, IdentityContext iContext)
         {
+            var builder = new ConfigurationBuilder().AddJsonFile("conf.json");
+            AppConfiguration = builder.Build();
             idb = iContext;
             db = context;
             _userManager = userManager;
@@ -386,8 +390,12 @@ namespace Afoxa.Controllers
 
         // POST: Course/AddStudent
         [HttpPost]
-        public ActionResult AddStudent(int? userId, string token)
+        public ActionResult AddStudent(int? userId, string token, string BotToken)
         {
+            if (BotToken != AppConfiguration["BotToken"])
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid || token == null || userId == null)
             {
                 return BadRequest("invalid");

@@ -29,6 +29,69 @@ namespace Afoxa.Controllers
         }
 
         [HttpGet]
+        public ActionResult GetCourse(string BotToken, int CourseId)
+        {
+            if (BotToken == AppConfiguration["BotToken"])
+            {
+                Course course = db.Courses.FirstOrDefault(c => c.Id == CourseId);
+                if (course != null)
+                {
+                    return Json(course);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetCourses(string BotToken, int TelegramId)
+        {
+            if (BotToken == AppConfiguration["BotToken"])
+            {
+                User user = idb.Users.FirstOrDefault(u => u.TelegramId == TelegramId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    List<Course> courses = new List<Course>();
+                    if (user.Role == "Teacher")
+                    {
+                        var teacher = db.Teachers.Where(u => u.UserId == user.Id).FirstOrDefault();
+                        db.Entry(teacher).Collection(c => c.Courses).Load();
+                        courses = teacher.Courses.ToList();
+                    }
+                    else if (user.Role == "Student")
+                    {
+                        var student = db.Students.Where(u => u.UserId == user.Id).FirstOrDefault();
+                        db.Entry(student).Collection(c => c.Courses).Load();
+                        courses = student.Courses.ToList();
+                    }
+
+                    Dictionary<string, int> result = new Dictionary<string, int>();
+
+                    foreach (var course in courses)
+                    {
+                        result.Add(course.Emoji + " " + course.Name, course.Id);
+                    }
+
+                    return Json(result);
+                }
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet]
         public ActionResult GetUser(string BotToken, int TelegramId)
         {
             if (BotToken == AppConfiguration["BotToken"])

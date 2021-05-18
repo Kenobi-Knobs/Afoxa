@@ -32,8 +32,12 @@ namespace Afoxa.Controllers
             {
                 return Forbid();
             }
-            User user = new User { Email = id.ToString(), UserName = id.ToString(), TelegramFirstName = firstName, TelegramId = id, TelegramUserName = userName, Role = status, TelegramChatId = chatId};
+            User user = new User { Email = id.ToString(), UserName = id.ToString(), TelegramFirstName = firstName, TelegramId = id, TelegramUserName = userName, Role = status};
             // добавляем пользователя
+            if (status == "Student")
+            {
+                user.TelegramChatId = chatId;
+            }
             var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
