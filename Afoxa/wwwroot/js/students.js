@@ -7,7 +7,7 @@ $('document').ready(function () {
 
     $('.time').each(function (index, element) {
         let unix = parseInt($(element).text());
-        $(element).text(new Date(unix * 1000).format('dd.mm.yy hh:MM'));
+        $(element).text(new Date(unix * 1000).format('dd.mm.yy HH:MM'));
     });
 });
 
@@ -101,7 +101,7 @@ function addToAdsTable(id, ad) {
     let cell2 = row.insertCell(1);
     let cell3 = row.insertCell(2);
     cell1.innerHTML = ad.Title;
-    cell2.innerHTML = new Date(ad.UnixTime * 1000).format('dd.mm.yy hh:MM');
+    cell2.innerHTML = new Date(ad.UnixTime * 1000).format('dd.mm.yy HH:MM');
     cell2.classList.add("time");
     cell3.innerHTML = '❌';
     cell3.id = id;

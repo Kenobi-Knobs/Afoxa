@@ -20,6 +20,13 @@ namespace Afoxa.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
+        public ActionResult Get(int Id)
+        {
+            return Json(db.Tasks.FirstOrDefault(t => t.Id == Id));
+        }
+
+
         // POST: Task/CreateOrUpdate
         [HttpPost]
         [Authorize(Roles = "Teacher")]

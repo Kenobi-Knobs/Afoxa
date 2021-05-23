@@ -410,8 +410,15 @@ namespace Afoxa.Controllers
             }
 
             course.Students.Add(student);
-            db.SaveChanges();
-            return Ok(200);
+            try
+            {
+                db.SaveChanges();
+                return Ok(200);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // POST: Course/Kick

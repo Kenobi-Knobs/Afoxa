@@ -100,7 +100,7 @@ namespace Afoxa.Controllers
             Dictionary<string, Submition> result = new Dictionary<string, Submition>();
             foreach (var submition in userSubmitions)
             {
-                result.Add(db.Tasks.FirstOrDefault(t => t.Id == submition.TaskId).Topic, submition);
+                result.Add(db.Tasks.FirstOrDefault(t => t.Id == submition.TaskId).Id.ToString(), submition);
             }
 
             return Json(result);

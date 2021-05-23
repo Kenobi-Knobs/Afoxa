@@ -22,20 +22,20 @@ def create_course_keyboard(course):
         courses.add(btn)
     return courses
 
-
-# accept_method_key = types.InlineKeyboardMarkup(row_width=2)
-# acces_key_btn = types.InlineKeyboardButton(text="Код доступа", callback_data='acces_key')
-# pay_btn = types.InlineKeyboardButton(text="Оплатить 1$⚠️", callback_data='pay')
-# cancel_btn = types.InlineKeyboardButton(text="❌ Отмена", callback_data='cancel')
-# accept_method_key.add(pay_btn, acces_key_btn, cancel_btn)
-#
-# universal_cancel_key = types.InlineKeyboardMarkup(row_width=1)
-# cancel_btn = types.InlineKeyboardButton(text="❌ Отмена", callback_data='cancel')
-# universal_cancel_key.add(cancel_btn)
-#
-# teacher_menu_key = types.InlineKeyboardMarkup(row_width=1)
-# cabinet_btn = types.InlineKeyboardButton(text="🚪 Вход в кабинет", url='https://habrahabr.ru')
-# send_notice_btn = types.InlineKeyboardButton(text="📣 Cоздать обьявление", callback_data='send_notice')
-# question_btn = types.InlineKeyboardButton(text="❓ Вопросы учеников", callback_data='question')
-# complete_tasks_btn = types.InlineKeyboardButton(text="✅ Выполненые задания", callback_data='complete_tasks')
-# teacher_menu_key.add(cabinet_btn, send_notice_btn, question_btn, complete_tasks_btn, settings_btn)
+def get_course_keyboard(role, course_id):
+    course = types.InlineKeyboardMarkup(row_width=2)
+    if role == 'Student':
+        lect_btn = types.InlineKeyboardButton(text="🎙 Лекції", callback_data='course_' + str(course_id) + "_lectlist")
+        task_btn = types.InlineKeyboardButton(text="📝 Завдання", callback_data='course_' + str(course_id) + "_tasklist")
+        teachers_btn = types.InlineKeyboardButton(text="👨‍🏫 Викладачі", callback_data='course_' + str(course_id) + "_teachers")
+        rate_btn = types.InlineKeyboardButton(text="‍✅ Оцінки", callback_data='course_' + str(course_id) + "_rate")
+        back_btn = types.InlineKeyboardButton(text="‍⬅️ Назад", callback_data="return_to_course_list")
+        course.add(lect_btn, task_btn, teachers_btn, rate_btn, back_btn)
+    if role == 'Teacher':
+        stud_btn = types.InlineKeyboardButton(text="‍🎓 Студенти", callback_data='course_' + str(course_id) + "_students")
+        link_btn = types.InlineKeyboardButton(text="🔑 Посилання", callback_data='course_' + str(course_id) + "_link")
+        revoke_btn = types.InlineKeyboardButton(text="🔄 Скинути посилання", callback_data='course_' + str(course_id) + "_revoke")
+        ads_btn = types.InlineKeyboardButton(text="📢‍ Оголошення", callback_data='course_' + str(course_id) + "_ads")
+        back_btn = types.InlineKeyboardButton(text="‍⬅️ Назад", callback_data="return_to_course_list")
+        course.add(stud_btn, link_btn, revoke_btn, ads_btn, back_btn)
+    return course

@@ -77,26 +77,32 @@ namespace Afoxa.Controllers
             }
             else
             {
-                var ad = db.Adv.Where(i => i.Id == id).FirstOrDefault();
-                var course = db.Courses.Where(i => i.Id == ad.CourseId).FirstOrDefault();
-                string userName = User.Identity.Name;
-                var user = _userManager.FindByNameAsync(userName);
-                var teacher = db.Teachers.Include(c => c.Courses).Where(t => t.UserId == user.Result.Id).First();
-                db.Entry(teacher).Collection(c => c.Courses).Load();
+                try {
+                    var ad = db.Adv.Where(i => i.Id == id).FirstOrDefault();
+                    var course = db.Courses.Where(i => i.Id == ad.CourseId).FirstOrDefault();
+                    string userName = User.Identity.Name;
+                    var user = _userManager.FindByNameAsync(userName);
+                    var teacher = db.Teachers.Include(c => c.Courses).Where(t => t.UserId == user.Result.Id).First();
+                    db.Entry(teacher).Collection(c => c.Courses).Load();
 
-                if (ad == null)
-                {
-                    return NotFound();
-                }
+                    if (ad == null)
+                    {
+                        return NotFound();
+                    }
 
-                // teacher is owner this course?
-                if (teacher.Courses.Contains(course))
-                {
-                    db.Adv.Remove(ad);
-                    db.SaveChanges();
-                    return Ok("Deleted");
+                    // teacher is owner this course?
+                    if (teacher.Courses.Contains(course))
+                    {
+                        db.Adv.Remove(ad);
+                        db.SaveChanges();
+                        return Ok("Deleted");
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                else
+                catch
                 {
                     return BadRequest();
                 }

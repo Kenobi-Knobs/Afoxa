@@ -397,7 +397,7 @@ function fixCard() {
             if (items[i].dataset.clink === '') {
                 icon = ' 👀'
             }
-            let text = new Date(parseInt(items[i].dataset.utime) * 1000).format('dd.mm.yy hh:MM') + icon;
+            let text = new Date(parseInt(items[i].dataset.utime) * 1000).format('dd.mm.yy HH:MM') + icon;
             items[i].getElementsByClassName('date-time')[0].innerText = text;
         }
         if (items[i].dataset.type == 'task') {
